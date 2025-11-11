@@ -1,23 +1,24 @@
-import { useState } from "react";
-import BmiForm from "./components/BmiForm";
-import BmiResult from "./components/BmiResult";
-import { calculateBmi, getBmiCategory } from "./utils/bmi";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Home from "./pages/Home/Home";
+import History from "./pages/Client/History";
+import About from "./pages/About/About";
 
 export default function App() {
-  const [bmi, setBmi] = useState<number | null>(null);
-  const [category, setCategory] = useState<string | null>(null);
-
-  function handleCalculate(weight: number, height: number) {
-    const value = calculateBmi(weight, height);
-    setBmi(value);
-    setCategory(getBmiCategory(value));
-  }
-
   return (
-    <div style={{ textAlign: "center", marginTop: "4rem" }}>
-      <h1>Calculateur d’IMC</h1>
-      <BmiForm onCalculate={handleCalculate} />
-      <BmiResult bmi={bmi} category={category} />
-    </div>
+    <Router>
+      <nav>
+        <ul>
+          <li><Link to="/">Accueil</Link></li>
+          <li><Link to="/historique">Historique</Link></li>
+          <li><Link to="/a-propos">À propos</Link></li>
+        </ul>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/historique" element={<History />} />
+        <Route path="/a-propos" element={<About />} />
+      </Routes>
+    </Router>
   );
 }
