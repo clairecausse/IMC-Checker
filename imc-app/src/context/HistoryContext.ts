@@ -9,6 +9,7 @@ export type Result = {
 export type HistoryContextType = {
   history: Result[];
   addResult: (result: Result) => void;
+  removeResult: (index: number) => void;
 };
 
 export const HistoryContext = createContext<HistoryContextType | null>(null);
