@@ -14,7 +14,6 @@ export default function BmiForm({ onCalculate }: Props) {
         e.preventDefault();
         onCalculate(weight, height);
       }}
-      style={{ display: "grid", gap: 12, maxWidth: 300, margin: "0 auto" }}
     >
       <label>
         Poids (kg)

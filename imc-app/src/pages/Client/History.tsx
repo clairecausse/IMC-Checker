@@ -10,7 +10,7 @@ export default function History() {
       {history.length === 0 && <p>Commencez à calculer votre IMC pour avoir un historique !</p>}
       <ul>
         {history.map((item, i) => (
-          <li key={i} style={{ marginBottom: 10 }}>
+          <li key={i}>
             <strong>IMC :</strong> {item.bmi} — {item.category}
             <br />
             <small>{item.date}</small>
