@@ -9,8 +9,12 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
     setHistory((prev) => [...prev, result]);
   }
 
+  function removeResult(index: number) {
+    setHistory((prev) => prev.filter((_, i) => i !== index));
+  }
+
   return (
-    <HistoryContext.Provider value={{ history, addResult }}>
+    <HistoryContext.Provider value={{ history, addResult, removeResult }}>
       {children}
     </HistoryContext.Provider>
   );
