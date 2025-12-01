@@ -1,10 +1,22 @@
-const History = () => {
+import { useHistoryContext } from "../../context/useHistoryContext";
+
+export default function History() {
+  const { history } = useHistoryContext();
+
   return (
     <div>
       <h1>Historique</h1>
-      <p>Page de l’historique (à implémenter plus tard)</p>
+
+      {history.length === 0 && <p>Commencez à calculer votre IMC pour avoir un historique !</p>}
+      <ul>
+        {history.map((item, i) => (
+          <li key={i} style={{ marginBottom: 10 }}>
+            <strong>IMC :</strong> {item.bmi} — {item.category}
+            <br />
+            <small>{item.date}</small>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-};
-
-export default History;
+}
