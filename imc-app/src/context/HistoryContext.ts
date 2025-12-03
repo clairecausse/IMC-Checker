@@ -14,6 +14,7 @@ export type HistoryContextType = {
   history: Result[];
   preferences: Preferences;
   addResult: (r: Result) => void;
+  removeResult: (index: number) => void;
   setPreferences: (p: Partial<Preferences>) => void;
 };
 

@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { HistoryContext, type Result, type Preferences } from "./HistoryContext";
 import type { ReactNode } from "react";
-import { setCookie, getCookie } from "../utils/cookie";
+import { useEffect, useState } from "react";
+import { getCookie, setCookie } from "../utils/cookie";
+import { HistoryContext, type Preferences, type Result } from "./HistoryContext";
 
 const COOKIE_KEY = "bmi-app-data";
 
@@ -18,6 +18,10 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
     setHistory((prev) => [...prev, result]);
   }
 
+  function removeResult(index: number) {
+    setHistory((prev) => prev.filter((_, i) => i !== index));
+  }
+
   function setPreferences(update: Partial<Preferences>) {
     setPreferencesState((prev) => ({ ...prev, ...update }));
   }
@@ -32,6 +36,7 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
         history,
         preferences,
         addResult,
+          removeResult,
         setPreferences,
       }}
     >
