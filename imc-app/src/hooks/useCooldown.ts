@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "last-bmi-calc";
 
-// CONFIG : ici on met 1 minute pour tester
-// En production tu mettras : 60 * 6 (= 6h)
-// ou même 60 * 24 (= 1 calcul par jour)
 const COOLDOWN_MINUTES = 1;
 
 export function useCooldown() {

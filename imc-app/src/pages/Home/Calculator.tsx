@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import BmiForm from "../../components/BmiForm";
 import BmiResult from "../../components/BmiResult";
 import { useHistoryContext } from "../../context/useHistoryContext";
@@ -11,8 +12,9 @@ export default function Calculator() {
   const [bmi, setBmi] = useState<number | null>(null);
   const [category, setCategory] = useState<string | null>(null);
 
-  const { addResult } = useHistoryContext();
+  const { addResult, removeResult, history } = useHistoryContext();
   const { available, remaining, saveNow } = useCooldown();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const last = getLastResult();
@@ -21,6 +23,7 @@ export default function Calculator() {
       setCategory(last.category);
     }
   }, []);
+
 
   function handleCalculate(weight: number, height: number) {
     if (!available) return;
@@ -43,6 +46,19 @@ export default function Calculator() {
     window.location.reload();
   }
 
+  function handleGoHistory() {
+    navigate("/historique");
+  }
+
+  function handleDeleteLast() {
+    if (!history || history.length === 0) return;
+    const idx = history.length - 1;
+    removeResult(idx);
+    localStorage.removeItem("last-bmi-calc");
+    localStorage.removeItem("last-bmi-result");
+    window.location.reload();
+  }
+
 
   return (
     <div className={`calculator ${!available ? "disabled" : ""}`}>
@@ -54,9 +70,19 @@ export default function Calculator() {
         </p>
       )}
 
-      <BmiForm onCalculate={handleCalculate} disabled={!available} />
+      <div className="form-area">
+        <BmiForm onCalculate={handleCalculate} disabled={!available} />
+      </div>
 
-      <BmiResult bmi={bmi} category={category} />
+      {!available && (
+        <div className="calculator-actions">
+          <BmiResult bmi={bmi} category={category} />
+          <div className="buttons">
+            <button onClick={handleGoHistory}>Voir l'historique</button>
+            <button onClick={handleDeleteLast}>Supprimer dernier calcul</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
