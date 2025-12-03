@@ -1,8 +1,8 @@
-/* 
+/*
   ====================================================
   IMC Checker - Main Stylesheet
   ====================================================
-  
+
   Palette de couleurs du logo:
   - Teal: #43c6ac
   - Dark Blue: #191654
@@ -116,9 +116,9 @@ main {
 }
 
 /* ====== SECTIONS ====== */
-.calculator, 
-.info-section, 
-.partners-section, 
+.calculator,
+.info-section,
+.partners-section,
 .history-section,
 .about-section {
   margin: 2rem 0;
@@ -131,9 +131,9 @@ main {
   transition: all var(--transition-md);
 }
 
-.calculator:hover, 
-.info-section:hover, 
-.partners-section:hover, 
+.calculator:hover,
+.info-section:hover,
+.partners-section:hover,
 .history-section:hover,
 .about-section:hover {
   box-shadow: var(--shadow-lg);
@@ -141,13 +141,13 @@ main {
 }
 
 @keyframes fadeInUp {
-  0% { 
-    opacity: 0; 
-    transform: translateY(24px); 
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
   }
-  100% { 
-    opacity: 1; 
-    transform: translateY(0); 
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -165,8 +165,8 @@ main {
   font-size: 1.05rem;
 }
 
-input, 
-select, 
+input,
+select,
 textarea {
   padding: 0.875rem 1rem;
   border: 2px solid var(--border-color);
@@ -178,8 +178,8 @@ textarea {
   font-family: inherit;
 }
 
-input:focus, 
-select:focus, 
+input:focus,
+select:focus,
 textarea:focus {
   border-color: var(--primary-teal);
   box-shadow: 0 0 0 3px rgba(67, 198, 172, 0.15);
@@ -206,6 +206,7 @@ button {
   position: relative;
   overflow: hidden;
   font-family: inherit;
+  margin-left: 10px;
 }
 
 button::before {
@@ -275,30 +276,30 @@ li {
 }
 
 @media (max-width: 768px) {
-  h1 { 
-    font-size: 2rem; 
+  h1 {
+    font-size: 2rem;
   }
-  h2 { 
-    font-size: 1.5rem; 
+  h2 {
+    font-size: 1.5rem;
   }
-  h3 { 
-    font-size: 1.2rem; 
+  h3 {
+    font-size: 1.2rem;
   }
-  
+
   main {
     padding: 1.5rem 1.5rem;
   }
-  
-  .calculator, 
-  .info-section, 
-  .partners-section, 
+
+  .calculator,
+  .info-section,
+  .partners-section,
   .history-section,
   .about-section {
     padding: 1.5rem 1rem;
     border-radius: 12px;
     margin: 1.5rem 0;
   }
-  
+
   button {
     padding: 0.75rem 1.5rem;
     font-size: 0.95rem;
@@ -306,35 +307,35 @@ li {
 }
 
 @media (max-width: 480px) {
-  h1 { 
-    font-size: 1.8rem; 
+  h1 {
+    font-size: 1.8rem;
     margin: 1.5rem 0;
   }
-  h2 { 
-    font-size: 1.3rem; 
+  h2 {
+    font-size: 1.3rem;
   }
-  h3 { 
-    font-size: 1.1rem; 
+  h3 {
+    font-size: 1.1rem;
   }
-  
+
   main {
     padding: 1rem;
   }
-  
-  .calculator, 
-  .info-section, 
-  .partners-section, 
+
+  .calculator,
+  .info-section,
+  .partners-section,
   .history-section,
   .about-section {
     padding: 1.25rem 0.75rem;
     margin: 1rem 0;
   }
-  
+
   button {
     padding: 0.75rem 1.25rem;
     font-size: 0.9rem;
   }
-  
+
   ul, ol {
     padding-left: 1rem;
   }
