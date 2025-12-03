@@ -79,7 +79,7 @@ export default function Calculator() {
           <BmiResult bmi={bmi} category={category} />
           <div className="buttons">
             <button onClick={handleGoHistory}>Voir l'historique</button>
-            <button onClick={handleDeleteLast}>Supprimer dernier calcul</button>
+            <button onClick={handleDeleteLast}>Modifier</button>
           </div>
         </div>
       )}
