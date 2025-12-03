@@ -4,7 +4,6 @@ import Home from "../pages/Home/Home";
 import History from "../pages/Client/History";
 import About from "../pages/About/About";
 import { HistoryProvider } from "../context/HistoryProvider";
-import "./AppRouter.css";
 
 export default function AppRouter() {
   return (
