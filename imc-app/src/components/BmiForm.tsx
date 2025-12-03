@@ -3,6 +3,7 @@ import "./Form.css";
 
 type Props = {
   onCalculate: (weightKg: number, heightCm: number) => void;
+  disabled?: boolean;
 };
 
 export default function BmiForm({ onCalculate }: Props) {

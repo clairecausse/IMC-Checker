@@ -1,0 +1,11 @@
+.calculator.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(100%);
+}
+
+.cooldown-text {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
