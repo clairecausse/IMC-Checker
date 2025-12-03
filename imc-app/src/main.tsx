@@ -1,10 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import AppRouter from "./router/AppRouter";
-import "./index.css";
+import App from "./App";
+import { HistoryProvider } from "./context/HistoryProvider";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <AppRouter />
+    <HistoryProvider>
+      <App />
+    </HistoryProvider>
   </React.StrictMode>
 );
