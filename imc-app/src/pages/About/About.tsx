@@ -1,3 +1,5 @@
+import "../Pages.css";
+
 const About = () => {
   return (
     <div>

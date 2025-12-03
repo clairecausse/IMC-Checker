@@ -2,6 +2,7 @@ import Calculator from "./Calculator";
 import InfoImc from "./InfoImc";
 import Partners from "./Partners";
 import logo from "../../assets/logo.png";
+import "../Pages.css";
 
 const Home = () => {
   return (

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./Form.css";
 
 type Props = {
   onCalculate: (weightKg: number, heightCm: number) => void;

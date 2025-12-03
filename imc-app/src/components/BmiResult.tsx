@@ -1,3 +1,5 @@
+import "./BmiResult.css";
+
 type Props = {
   bmi: number | null;
   category: string | null;
@@ -8,7 +10,7 @@ export default function BmiResult({ bmi, category }: Props) {
 
   return (
     <div>
-      <h2>rslt</h2>
+      <h2>Résultat</h2>
       <p>IMC : <strong>{bmi}</strong></p>
       <p>Catégorie : <em>{category}</em></p>
     </div>
