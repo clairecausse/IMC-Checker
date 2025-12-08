@@ -1,18 +1,16 @@
-// src/components/RgpdInfo/RgpdInfo.tsx
-import "./Rgpd.css";
 
 export default function RgpdInfo() {
   return (
-    <div className="rgpd-container">
-      <h2 className="rgpd-title">🔒 Traitement des données (RGPD)</h2>
+    <div>
+      <h2>🔒 Traitement des données (RGPD)</h2>
 
-      <p className="rgpd-text">
+      <p>
         Les données que vous saisissez (taille, poids) sont utilisées
         uniquement pour calculer votre IMC et afficher votre historique
         de calculs sur ce navigateur.
       </p>
 
-      <div className="rgpd-section">
+      <div>
         <h3>Quelles données&nbsp;?</h3>
         <ul>
           <li>Taille et poids saisis dans le formulaire d&apos;IMC</li>
@@ -20,7 +18,7 @@ export default function RgpdInfo() {
         </ul>
       </div>
 
-      <div className="rgpd-section">
+      <div>
         <h3>Comment sont-elles traitées&nbsp;?</h3>
         <ul>
           <li>
@@ -36,16 +34,16 @@ export default function RgpdInfo() {
         </ul>
       </div>
 
-      <div className="rgpd-section">
+      <div>
         <h3>Consentement</h3>
-        <p className="rgpd-text">
+        <p>
           Avant chaque calcul, l&apos;utilisateur doit cocher une case de
           consentement dans le formulaire d&apos;IMC indiquant qu&apos;il accepte
           l&apos;utilisation de ses données pour ce calcul.
         </p>
       </div>
 
-      
+
     </div>
   );
 }
