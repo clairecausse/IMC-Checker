@@ -264,4 +264,44 @@
   .history-empty {
     padding: 2rem 1rem;
   }
+  
+.chart-section {
+  margin: 2rem 0;
 }
+
+.period-selector {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.period-selector button {
+  padding: 0.6rem 1.4rem;
+  border: 2px solid #ddd;
+  background: #ffffff;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #1b3c4b;
+  transition: all 0.2s;
+}
+
+.period-selector button.active,
+.period-selector button:hover {
+  background: linear-gradient(135deg, #27c1a5, #2360c4);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.chart-container {
+  max-width: 900px;
+  height: 400px; /* augmente ici pour un graph plus grand */
+  margin: 0 auto;
+}
+
+/* le reste de ton CSS existant (history-container, history-item, etc.) reste inchangé */
+
+}
+
