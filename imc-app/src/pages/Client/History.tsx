@@ -1,5 +1,6 @@
 import { useHistoryContext } from "../../context/useHistoryContext";
 import "./History.css";
+import RGPD from "./RGPD";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -212,6 +213,7 @@ export default function History() {
           >
             Total des calculs: <strong>{history.length}</strong>
           </p>
+          <RGPD/>
         </>
       )}
     </div>
