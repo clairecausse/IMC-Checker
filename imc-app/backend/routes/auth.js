@@ -8,46 +8,55 @@ import { sendVerificationEmail } from "../utils/email.js";
 const router = express.Router();
 
 // REGISTER
-router.post("/register", (req, res) => {
+router.post("/register", async (req, res) => {
   const { email, password } = req.body;
 
   const token = generateToken();
   const hashed = hashPassword(password);
 
   try {
-    db.prepare(
-      "INSERT INTO users (email, password, verification_token) VALUES (?, ?, ?)"
-    ).run(email, hashed, token);
+    await db.run(
+      "INSERT INTO users (email, password, verification_token) VALUES (?, ?, ?)",
+      email,
+      hashed,
+      token
+    );
   } catch (e) {
     return res.status(400).json({ error: "Email déjà utilisé" });
   }
 
   sendVerificationEmail(email, token);
-
   res.json({ message: "Compte créé ! Vérifie tes emails." });
 });
 
 // VERIFY EMAIL
-router.get("/verify/:token", (req, res) => {
+router.get("/verify/:token", async (req, res) => {
   const { token } = req.params;
 
-  const user = db
-    .prepare("SELECT * FROM users WHERE verification_token = ?")
-    .get(token);
+  const user = await db.get(
+    "SELECT * FROM users WHERE verification_token = ?",
+    token
+  );
 
   if (!user) return res.status(400).json({ error: "Token invalide" });
 
-  db.prepare("UPDATE users SET verified = 1, verification_token = NULL WHERE id = ?")
-    .run(user.id);
+  await db.run(
+    "UPDATE users SET verified = 1, verification_token = NULL WHERE id = ?",
+    user.id
+  );
 
   res.json({ message: "Email vérifié !" });
 });
 
 // LOGIN
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
+  const user = await db.get(
+    "SELECT * FROM users WHERE email = ?",
+    email
+  );
+
   if (!user) return res.status(400).json({ error: "Utilisateur inconnu" });
 
   if (!comparePassword(password, user.password))

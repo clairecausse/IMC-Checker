@@ -1,4 +1,3 @@
-
 import express from "express";
 import db from "../database/index.js";
 import jwt from "jsonwebtoken";
@@ -21,21 +20,25 @@ function auth(req, res, next) {
 }
 
 // GET HISTORY
-router.get("/", auth, (req, res) => {
-  const rows = db
-    .prepare("SELECT * FROM history WHERE user_id = ? ORDER BY id DESC")
-    .all(req.user.id);
-
+router.get("/", auth, async (req, res) => {
+  const rows = await db.all(
+    "SELECT * FROM history WHERE user_id = ? ORDER BY id DESC",
+    req.user.id
+  );
   res.json(rows);
 });
 
 // ADD HISTORY
-router.post("/", auth, (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { bmi, category, date } = req.body;
 
-  db.prepare(
-    "INSERT INTO history (user_id, bmi, category, date) VALUES (?, ?, ?, ?)"
-  ).run(req.user.id, bmi, category, date);
+  await db.run(
+    "INSERT INTO history (user_id, bmi, category, date) VALUES (?, ?, ?, ?)",
+    req.user.id,
+    bmi,
+    category,
+    date
+  );
 
   res.json({ message: "Enregistré !" });
 });
