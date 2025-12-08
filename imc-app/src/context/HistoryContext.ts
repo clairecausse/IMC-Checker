@@ -3,7 +3,7 @@ import { createContext } from "react";
 export type Result = {
   bmi: number;
   category: string;
-  date: string; // stockée en ISO (new Date().toISOString())
+  date: string;
 };
 
 export type Preferences = {

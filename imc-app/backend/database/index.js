@@ -1,9 +1,7 @@
-import Database from "better-sqlite3";
-import fs from "fs";
+import sqlite3 from "sqlite3";
+import { open } from "sqlite";
 
-const db = new Database("db.sqlite");
-
-const schema = fs.readFileSync("./database/schema.sql", "utf8");
-db.exec(schema);
-
-export default db;
+export default await open({
+  filename: "database.db",
+  driver: sqlite3.Database
+});

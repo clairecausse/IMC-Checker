@@ -1,22 +1,25 @@
 import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
+import { setCookie, getCookie } from "../utils/cookie";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("token");
-    if (stored) setToken(stored);
+    const savedToken = getCookie("auth-token");
+    if (savedToken) {
+      setToken(savedToken);
+    }
   }, []);
 
   function login(token: string) {
-    localStorage.setItem("token", token);
+    setCookie("auth-token", token, 365); // 1 an
     setToken(token);
   }
 
   function logout() {
-    localStorage.removeItem("token");
+    document.cookie = "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     setToken(null);
   }
 
