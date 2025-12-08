@@ -1,0 +1,35 @@
+.profil-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+}
+
+.profil-info {
+  background: #f8f8f8;
+  padding: 1.5rem;
+  border-radius: 10px;
+}
+
+.logout-btn {
+  margin-top: 1rem;
+  background: #ff4d4d;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #e63939;
+}
+
+.profil-separator {
+  margin: 3rem 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+.profil-history h2 {
+  margin-bottom: 1rem;
+}

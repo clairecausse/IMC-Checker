@@ -1,29 +1,40 @@
 import { useAuthContext } from "../../context/useAuthContext";
-import { Navigate } from "react-router-dom";
-import { useHistoryContext } from "../../context/useHistoryContext";
+import History from "./History";
+import "./Profil.css";
 
 export default function Profil() {
-  const { token } = useAuthContext();
-  const { history } = useHistoryContext();
-
-  if (!token) return <Navigate to="/login" replace />;
+  const { token, logout } = useAuthContext();
 
   return (
-    <div>
-      <h1>Mon profil</h1>
-      <h2>Historique IMC</h2>
+    <div className="profil-container">
+      <h1>👤 Mon Profil</h1>
 
-      {history.length === 0 && <p>Aucun historique.</p>}
+      <section className="profil-info">
+        <h2>Informations du compte</h2>
 
-      <ul>
-        {history.map((item, i) => (
-          <li key={i}>
-            <strong>{item.bmi}</strong> — {item.category}
-            <br />
-            <small>{item.date}</small>
-          </li>
-        ))}
-      </ul>
+        <p>
+          <strong>Statut :</strong>{" "}
+          {token ? "Connecté" : "Non connecté"}
+        </p>
+
+        {token && (
+          <p>
+            <strong>Token :</strong> {token.slice(0, 15)}...
+            <span style={{ color: "#777" }}>(caché)</span>
+          </p>
+        )}
+
+        <button className="logout-btn" onClick={logout}>
+          Se déconnecter
+        </button>
+      </section>
+
+      <hr className="profil-separator" />
+
+      <section className="profil-history">
+        <h2>📊 Mon historique IMC</h2>
+        <History hideTitle />
+      </section>
     </div>
   );
 }

@@ -1,6 +1,8 @@
+import { useState, useMemo } from "react";
 import { useHistoryContext } from "../../context/useHistoryContext";
 import "./History.css";
 import RGPD from "./RGPD";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,7 +15,6 @@ import {
   Filler,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { useState, useMemo } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -28,13 +29,21 @@ ChartJS.register(
 
 type Period = "30j" | "3m" | "1a" | "tout";
 
-export default function History() {
+type HistoryProps = {
+  hideTitle?: boolean; // 👉 ajout pour utilisation dans Profil
+};
+
+export default function History({ hideTitle = false }: HistoryProps) {
   const { history, removeResult } = useHistoryContext();
   const [period, setPeriod] = useState<Period>("30j");
 
+  // Classe CSS selon la catégorie
   const getCategoryClass = (category: string) =>
     `history-item-category ${category.toLowerCase().replace(/\s+/g, "")}`;
 
+  // --------------------------
+  //     CALCUL DU GRAPHIQUE
+  // --------------------------
   const { chartData, hasData } = useMemo(() => {
     const now = new Date();
     let cutoffDate: Date;
@@ -53,26 +62,26 @@ export default function History() {
         cutoffDate = new Date(0);
     }
 
+    // Filtrage et tri par date
     const filteredHistory = history
       .filter((item) => {
-        const d = new Date(item.date); // item.date vient de new Date().toISOString()
+        const d = new Date(item.date);
         return !isNaN(d.getTime()) && d >= cutoffDate;
       })
       .sort(
-        (a, b) =>
-          new Date(a.date).getTime() - new Date(b.date).getTime()
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
       );
 
-    const labels = filteredHistory.map((item) => {
-      const d = new Date(item.date);
-      return d.toLocaleDateString("fr-FR", {
+    // Labels du graphique
+    const labels = filteredHistory.map((item) =>
+      new Date(item.date).toLocaleDateString("fr-FR", {
         day: "2-digit",
         month: "2-digit",
         year: "2-digit",
-      });
-    });
+      })
+    );
 
-    const dataValues = filteredHistory.map((item) => item.bmi as number);
+    const dataValues = filteredHistory.map((item) => item.bmi);
 
     const chartData = {
       labels,
@@ -87,7 +96,7 @@ export default function History() {
           pointRadius: 4,
           pointHoverRadius: 6,
           pointBackgroundColor: filteredHistory.map((item) => {
-            const bmi = item.bmi as number;
+            const bmi = item.bmi;
             if (bmi < 18.5) return "rgb(54, 162, 235)";
             if (bmi > 25) return "rgb(255, 99, 132)";
             return "rgb(75, 192, 192)";
@@ -102,13 +111,12 @@ export default function History() {
     return { chartData, hasData: filteredHistory.length > 0 };
   }, [history, period]);
 
+  // Options du graphique
   const options = {
     responsive: true,
-    maintainAspectRatio: false, // hauteur contrôlée par le CSS
+    maintainAspectRatio: false,
     plugins: {
-      legend: {
-        position: "top" as const,
-      },
+      legend: { position: "top" as const },
       title: {
         display: true,
         text:
@@ -123,61 +131,41 @@ export default function History() {
       },
     },
     scales: {
-      y: {
-        beginAtZero: false,
-        title: { display: true, text: "IMC" },
-      },
-      x: {
-        title: { display: true, text: "Date" },
-      },
+      y: { beginAtZero: false, title: { display: true, text: "IMC" } },
+      x: { title: { display: true, text: "Date" } },
     },
   };
 
+  // --------------------------
+  //     RENDER
+  // --------------------------
   return (
     <div className="history-container">
-<<<<<<< HEAD
-      <h1>Historique de vos calculs</h1>
-=======
-      <h1>📊 Historique et Évolution IMC</h1>
+      {!hideTitle && <h1>📊 Historique et Évolution IMC</h1>}
 
+      {/* SECTION GRAPHIQUE */}
       <div className="chart-section">
         <div className="period-selector">
-          <button
-            className={period === "30j" ? "active" : ""}
-            onClick={() => setPeriod("30j")}
-          >
+          <button className={period === "30j" ? "active" : ""} onClick={() => setPeriod("30j")}>
             30 jours
           </button>
-          <button
-            className={period === "3m" ? "active" : ""}
-            onClick={() => setPeriod("3m")}
-          >
+          <button className={period === "3m" ? "active" : ""} onClick={() => setPeriod("3m")}>
             3 mois
           </button>
-          <button
-            className={period === "1a" ? "active" : ""}
-            onClick={() => setPeriod("1a")}
-          >
+          <button className={period === "1a" ? "active" : ""} onClick={() => setPeriod("1a")}>
             1 an
           </button>
-          <button
-            className={period === "tout" ? "active" : ""}
-            onClick={() => setPeriod("tout")}
-          >
+          <button className={period === "tout" ? "active" : ""} onClick={() => setPeriod("tout")}>
             Tout
           </button>
         </div>
 
         <div className="chart-container">
-          {hasData ? (
-            <Line data={chartData} options={options} />
-          ) : (
-            <p>Aucune donnée pour cette période.</p>
-          )}
+          {hasData ? <Line data={chartData} options={options} /> : <p>Aucune donnée pour cette période.</p>}
         </div>
       </div>
->>>>>>> 54bc962ab5a406090705a2d971a528c80cf8648a
 
+      {/* LISTE DES ENTRÉES */}
       {history.length === 0 ? (
         <div className="history-empty">
           <p>Commencez à calculer votre IMC pour voir votre historique !</p>
@@ -196,6 +184,7 @@ export default function History() {
                   </div>
                   <div className="history-item-date">📅 {item.date}</div>
                 </div>
+
                 <div className="history-item-actions">
                   <button
                     className="history-item-delete"
@@ -208,16 +197,12 @@ export default function History() {
               </li>
             ))}
           </ul>
-          <p
-            style={{
-              textAlign: "center",
-              color: "#666",
-              marginTop: "2rem",
-            }}
-          >
-            Total des calculs: <strong>{history.length}</strong>
+
+          <p className="history-total">
+            Total des calculs : <strong>{history.length}</strong>
           </p>
-          <RGPD/>
+
+          <RGPD />
         </>
       )}
     </div>
