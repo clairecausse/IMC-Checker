@@ -6,7 +6,6 @@ import { HistoryContext, type Preferences, type Result } from "./HistoryContext"
 const COOKIE_KEY = "bmi-app-data";
 
 export function HistoryProvider({ children }: { children: ReactNode }) {
-
   const cookieData = getCookie(COOKIE_KEY);
 
   const [history, setHistory] = useState<Result[]>(cookieData?.history || []);
@@ -15,7 +14,12 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
   );
 
   function addResult(result: Result) {
-    setHistory((prev) => [...prev, result]);
+    const resultWithDate: Result = {
+      ...result,
+      date: new Date().toISOString(), // date ISO utilisée pour les filtres 30j / 3m / 1a
+    };
+
+    setHistory((prev) => [...prev, resultWithDate]);
   }
 
   function removeResult(index: number) {
@@ -36,7 +40,7 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
         history,
         preferences,
         addResult,
-          removeResult,
+        removeResult,
         setPreferences,
       }}
     >
