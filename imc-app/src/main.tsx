@@ -1,13 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { HistoryProvider } from "./context/HistoryProvider";
 import "./index.css";
+import { AuthProvider } from "./context/AuthProvider";
+
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <HistoryProvider>
+    <AuthProvider>
       <App />
-    </HistoryProvider>
+    </AuthProvider>
   </React.StrictMode>
 );

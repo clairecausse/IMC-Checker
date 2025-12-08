@@ -10,7 +10,7 @@ export default function History() {
 
   return (
     <div className="history-container">
-      <h1>📊 Historique de vos calculs</h1>
+      <h1>Historique de vos calculs</h1>
 
       {history.length === 0 ? (
         <div className="history-empty">
@@ -31,7 +31,7 @@ export default function History() {
                   <div className="history-item-date">📅 {item.date}</div>
                 </div>
                 <div className="history-item-actions">
-                  <button 
+                  <button
                     className="history-item-delete"
                     onClick={() => removeResult(i)}
                     title="Supprimer cet enregistrement"

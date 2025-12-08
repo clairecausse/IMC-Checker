@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import BmiForm from "../../components/BmiForm";
 import BmiResult from "../../components/BmiResult";
 import { useHistoryContext } from "../../context/useHistoryContext";
-import { useCooldown } from "../../hooks/useCooldown";
+import { useCooldown } from "../../context/hooks/useCooldown";
 import { calculateBmi, getBmiCategory } from "../../utils/bmi";
 import { getLastResult, saveLastResult } from "../../utils/storage";
 import "./Calculator.css";
@@ -15,12 +15,18 @@ export default function Calculator() {
   const { addResult, removeResult, history } = useHistoryContext();
   const { available, remaining, saveNow } = useCooldown();
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const last = getLastResult();
-    if (last) {
-      setBmi(last.bmi);
-      setCategory(last.category);
+    try {
+      const last = getLastResult();
+      if (last) {
+        setBmi(last.bmi);
+        setCategory(last.category);
+      }
+    } catch (e) {
+      console.error("Erreur chargement dernier résultat:", e);
+      setError("Impossible de charger le dernier résultat.");
     }
   }, []);
 
@@ -28,22 +34,30 @@ export default function Calculator() {
   function handleCalculate(weight: number, height: number) {
     if (!available) return;
 
-    const value = calculateBmi(weight, height);
-    const cat = getBmiCategory(value);
+    try {
+      const value = calculateBmi(weight, height);
+      if (!isFinite(value) || Number.isNaN(value)) throw new Error("IMC invalide");
 
-    setBmi(value);
-    setCategory(cat);
+      const cat = getBmiCategory(value);
 
-    addResult({
-      bmi: value,
-      category: cat,
-      date: new Date().toLocaleString(),
-    });
+      setBmi(value);
+      setCategory(cat);
+      setError(null);
 
-    saveLastResult({ bmi: value, category: cat });
+      addResult({
+        bmi: value,
+        category: cat,
+        date: new Date().toLocaleString(),
+      });
 
-    saveNow();
-    window.location.reload();
+      saveLastResult({ bmi: value, category: cat });
+
+      saveNow();
+      window.location.reload();
+    } catch (e) {
+      console.error("Erreur lors du calcul IMC:", e);
+      setError("Erreur lors du calcul. Vérifiez les valeurs saisies et réessayez.");
+    }
   }
 
   function handleGoHistory() {
@@ -56,6 +70,7 @@ export default function Calculator() {
     removeResult(idx);
     localStorage.removeItem("last-bmi-calc");
     localStorage.removeItem("last-bmi-result");
+    setError(null);
     window.location.reload();
   }
 
@@ -68,6 +83,12 @@ export default function Calculator() {
         <p className="cooldown-text">
           Vous avez déjà calculé votre IMC pour ajourd'hui, revenez demain ! {remaining} minute(s)
         </p>
+      )}
+
+      {error && (
+        <div role="alert" style={{ color: "#c0392b", marginBottom: "12px" }}>
+          {error}
+        </div>
       )}
 
       <div className="form-area">

@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    verified INTEGER DEFAULT 0,
+    verification_token TEXT
+);
+
+CREATE TABLE IF NOT EXISTS history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    bmi REAL NOT NULL,
+    category TEXT NOT NULL,
+    date TEXT NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+);
