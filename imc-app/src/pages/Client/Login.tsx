@@ -28,7 +28,6 @@ export default function Login() {
         return;
       }
 
-      // succès → on enregistre le token
       login(data.token);
       navigate("/profil");
 

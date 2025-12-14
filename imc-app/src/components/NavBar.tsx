@@ -4,7 +4,7 @@ import logo from "../assets/logo.png";
 import "./NavBar.css";
 
 export default function NavBar() {
-  const { token, logout } = useAuthContext();
+  const { token, logout, openAuthModal } = useAuthContext();
 
   return (
     <nav className="navbar">
@@ -21,10 +21,16 @@ export default function NavBar() {
         {token ? (
           <>
             <li><Link to="/profil">Mon profil</Link></li>
-            <li><button className="logout-btn" onClick={logout}>Déconnexion</button></li>
+            <li>
+              <button className="logout-btn" onClick={logout}>Déconnexion</button>
+            </li>
           </>
         ) : (
-          <li><Link to="/login">Me connecter</Link></li>
+          <li>
+            <button className="login-btn" onClick={openAuthModal}>
+              Se connecter
+            </button>
+          </li>
         )}
       </ul>
     </nav>

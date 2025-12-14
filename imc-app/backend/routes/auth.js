@@ -7,28 +7,6 @@ import { sendVerificationEmail } from "../utils/email.js";
 
 const router = express.Router();
 
-// REGISTER
-router.post("/register", async (req, res) => {
-  const { email, password } = req.body;
-
-  const token = generateToken();
-  const hashed = hashPassword(password);
-
-  try {
-    await db.run(
-      "INSERT INTO users (email, password, verification_token) VALUES (?, ?, ?)",
-      email,
-      hashed,
-      token
-    );
-  } catch (e) {
-    return res.status(400).json({ error: "Email déjà utilisé" });
-  }
-
-  sendVerificationEmail(email, token);
-  res.json({ message: "Compte créé ! Vérifie tes emails." });
-});
-
 // VERIFY EMAIL
 router.get("/verify/:token", async (req, res) => {
   const { token } = req.params;
@@ -38,7 +16,7 @@ router.get("/verify/:token", async (req, res) => {
     token
   );
 
-  if (!user) return res.status(400).json({ error: "Token invalide" });
+  if (!user) return res.status(403).json({ error: "Token invalide" });
 
   await db.run(
     "UPDATE users SET verified = 1, verification_token = NULL WHERE id = ?",
@@ -63,11 +41,40 @@ router.post("/login", async (req, res) => {
     return res.status(400).json({ error: "Mot de passe incorrect" });
 
   if (!user.verified)
-    return res.status(400).json({ error: "Compte non vérifié" });
+    return res.status(400).json({ error: "Votre compte n'est pas encore vérifié" });
 
   const token = jwt.sign({ id: user.id }, "secret", { expiresIn: "7d" });
 
   res.json({ token });
 });
+
+// REGISTER
+router.post("/register", async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "Champs manquants" });
+  }
+
+  const token = generateToken();
+  const hashed = hashPassword(password);
+
+  try {
+    await db.run(
+      "INSERT INTO users (email, password, verification_token) VALUES (?, ?, ?)",
+      email,
+      hashed,
+      token
+    );
+
+    sendVerificationEmail(email, token);
+    res.status(201).json({ message: "Compte créé ! Vérifie tes emails." });
+
+  } catch (err) {
+    return res.status(400).json({ error: "Email déjà utilisé" });
+  }
+});
+
+
 
 export default router;

@@ -7,7 +7,7 @@ export default function Profil() {
 
   return (
     <div className="profil-container">
-      <h1>👤 Mon Profil</h1>
+      <h1>Mon Profil</h1>
 
       <section className="profil-info">
         <h2>Informations du compte</h2>

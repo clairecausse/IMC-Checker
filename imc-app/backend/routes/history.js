@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-// middleware pour décoder le token
 function auth(req, res, next) {
   const header = req.headers.authorization;
   if (!header) return res.status(401).json({ error: "Token manquant" });

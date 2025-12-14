@@ -4,6 +4,7 @@ import Home from "../pages/Home/Home";
 import Profil from "../pages/Client/Profil";
 import Login from "../pages/Client/Login";
 import About from "../pages/About/About";
+import AuthModal from "../components/AuthModal";
 
 import { HistoryProvider } from "../context/HistoryProvider";
 import { AuthProvider } from "../context/AuthProvider";
@@ -14,6 +15,7 @@ export default function AppRouter() {
       <HistoryProvider>
         <Router>
           <NavBar />
+          <AuthModal />
           <main >
             <Routes>
               <Route path="/" element={<Home />} />
