@@ -33,3 +33,22 @@
 .profil-history h2 {
   margin-bottom: 1rem;
 }
+
+.profil-auth-box {
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  background: #fafafa;
+}
+
+.profil-hello {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.logout-btn.danger {
+  margin-top: 2rem;
+  background: #c62828;
+  color: white;
+}

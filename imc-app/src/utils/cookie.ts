@@ -14,3 +14,23 @@ export function getCookie(name: string) {
     return null;
   }
 }
+
+export function deleteCookie(name: string) {
+  document.cookie = `${name}=; Max-Age=0; path=/`;
+}
+
+const AUTH_COOKIE = "bmi-auth";
+
+export function setAuthCookie(token: string) {
+  setCookie(AUTH_COOKIE, { token });
+}
+
+export function getAuthCookie(): { token: string } | null {
+  return getCookie(AUTH_COOKIE);
+}
+
+export function deleteAuthCookie() {
+  deleteCookie(AUTH_COOKIE);
+}
+
+

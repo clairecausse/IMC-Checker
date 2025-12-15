@@ -1,17 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
+import {
+  setAuthCookie,
+  getAuthCookie,
+  deleteAuthCookie,
+} from "../utils/cookie";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
+  const [justRegistered, setJustRegistered] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
+  const isAuthenticated = !!token;
+
+  useEffect(() => {
+    const saved = getAuthCookie();
+    if (saved?.token) {
+      setToken(saved.token);
+    }
+  }, []);
 
   function login(newToken: string) {
     setToken(newToken);
-    closeAuthModal(); // fermer le modal après connexion
+    setJustRegistered(false);
+    setAuthCookie(newToken);
+    closeAuthModal();
+  }
+
+  function register(newToken: string) {
+    setToken(newToken);
+    setJustRegistered(true);
+    setAuthCookie(newToken);
+    closeAuthModal();
   }
 
   function logout() {
     setToken(null);
+    setJustRegistered(false);
+    deleteAuthCookie();
   }
 
   function openAuthModal() {
@@ -26,7 +52,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     <AuthContext.Provider
       value={{
         token,
+        isAuthenticated,
+        justRegistered,
         login,
+        register,
         logout,
         isAuthModalOpen,
         openAuthModal,

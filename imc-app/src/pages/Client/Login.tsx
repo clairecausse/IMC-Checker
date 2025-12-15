@@ -2,20 +2,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/useAuthContext";
 
-export default function Login() {
+export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const { login } = useAuthContext();
+  const { register } = useAuthContext();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
 
     try {
-      const res = await fetch("http://localhost:3001/auth/login", {
+      const res = await fetch("http://localhost:3001/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
@@ -24,21 +24,22 @@ export default function Login() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError("Email ou mot de passe incorrect");
+        setError(data.message || "Erreur lors de la création du compte");
         return;
       }
 
-      login(data.token);
+      register(data.token);
       navigate("/profil");
 
-    } catch (err) {
+    } catch {
       setError("Impossible de contacter le serveur");
     }
   }
 
   return (
     <div>
-      <h1>Connexion</h1>
+      <h1>Créer un compte</h1>
+
       <form onSubmit={handleSubmit}>
         <label>Email :</label>
         <input
@@ -53,7 +54,7 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button type="submit">Se connecter</button>
+        <button type="submit">Créer un compte</button>
       </form>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
