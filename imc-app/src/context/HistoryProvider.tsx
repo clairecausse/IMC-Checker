@@ -26,14 +26,10 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (isAuthenticated) {
-      setHistory([]);
-      setPreferencesState({ theme: "light" });
-      return;
+    if (!isAuthenticated) {
+      setHistory(cookieHistory);
+      setPreferencesState(cookiePrefs);
     }
-
-    setHistory(cookieHistory);
-    setPreferencesState(cookiePrefs);
   }, [isAuthenticated, justRegistered]);
 
   function addResult(result: Result) {
