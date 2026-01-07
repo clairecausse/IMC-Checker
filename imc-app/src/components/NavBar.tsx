@@ -1,18 +1,30 @@
 import { Link } from "react-router-dom";
-import "./Navbar.css";
 import logo from "../assets/logo.png";
+import "./NavBar.css";
+import Settings from "./Settings";
+import { useLang } from "../context/language";
 
-const Navbar = () => {
+export default function NavBar() {
+  const { t } = useLang();
+
   return (
-    <nav>
-      <img src={logo} alt="Logo" />
-      <ul>
-        <li><Link to="/">Accueil</Link></li>
-        <li><Link to="/historique">Historique</Link></li>
-        <li><Link to="/a-propos">À propos</Link></li>
+    <nav className="navbar">
+      <div className="navbar-left">
+        <Link to="/">
+          <img src={logo} alt="Logo" className="navbar-logo" />
+        </Link>
+      </div>
+
+      <ul className="navbar-links">
+        <li>
+          <Link to="/">{t("nav.home")}</Link>
+        </li>
+        <li>
+          <Link to="/profil">{t("nav.profile")}</Link>
+        </li>
       </ul>
+
+      <Settings />
     </nav>
   );
-};
-
-export default Navbar;
+}

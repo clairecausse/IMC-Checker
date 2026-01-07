@@ -6,10 +6,16 @@ export type Result = {
   date: string;
 };
 
+export type Preferences = {
+  theme: "light" | "dark";
+};
+
 export type HistoryContextType = {
   history: Result[];
-  addResult: (result: Result) => void;
+  preferences: Preferences;
+  addResult: (r: Result) => void;
   removeResult: (index: number) => void;
+  setPreferences: (p: Partial<Preferences>) => void;
 };
 
 export const HistoryContext = createContext<HistoryContextType | null>(null);

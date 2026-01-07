@@ -1,0 +1,340 @@
+/* Palette de couleurs */
+:root {
+  --primary-teal: #43c6ac;
+  --primary-dark: #191654;
+  --primary-blue: #195c9f;
+  --secondary-light: #eef6fa;
+  --text-dark: #263238;
+  --text-light: #f5f5f5;
+  --shadow-sm: 0 2px 8px rgba(67, 198, 172, 0.08);
+  --shadow-md: 0 6px 24px rgba(100, 179, 244, 0.13);
+}
+
+/* Conteneur principal */
+.history-container {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Titre */
+.history-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(90deg, var(--primary-teal) 0%, var(--primary-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Message vide */
+.history-empty {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: rgba(67, 198, 172, 0.05);
+  border-radius: 12px;
+  border: 2px dashed var(--primary-teal);
+  color: var(--text-dark);
+  font-size: 1.1rem;
+}
+
+.history-empty p {
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* Liste d'historique */
+.history-list {
+  list-style: none;
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Carte d'historique */
+.history-item {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.99), rgba(238, 246, 250, 0.5));
+  border: 2px solid var(--border-color, #c7e3f7);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.history-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, var(--primary-teal), var(--primary-dark));
+  border-radius: 12px 0 0 12px;
+}
+
+.history-item:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--primary-teal);
+}
+
+/* Contenu de la carte */
+.history-item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.history-item-main {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.history-item-bmi {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--primary-teal), var(--primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.history-item-category {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  background: rgba(67, 198, 172, 0.15);
+  color: var(--primary-teal);
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Catégories spécifiques */
+.history-item-category.underweight {
+  background: rgba(76, 175, 245, 0.15);
+  color: #4cafb5;
+}
+
+.history-item-category.normal {
+  background: rgba(76, 175, 245, 0.15);
+  color: #4caf50;
+}
+
+.history-item-category.overweight {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+}
+
+.history-item-category.obese {
+  background: rgba(244, 67, 54, 0.15);
+  color: #f44336;
+}
+
+.history-item-date {
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* Actions */
+.history-item-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.history-item-delete {
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, var(--primary-teal), var(--primary-dark));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+}
+
+.history-item-delete:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.history-item-delete:active {
+  transform: translateY(0);
+}
+
+/* Statistiques */
+.history-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, rgba(67, 198, 172, 0.1), rgba(25, 22, 84, 0.05));
+  border: 2px solid var(--primary-teal);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--primary-dark);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--primary-teal), var(--primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  opacity: 0.8;
+  margin-top: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .history-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .history-item-actions {
+    width: 100%;
+  }
+
+  .history-item-delete {
+    width: 100%;
+    text-align: center;
+  }
+
+  .history-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .history-container h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .history-item {
+    padding: 1.25rem;
+    gap: 1rem;
+  }
+
+  .history-item-bmi {
+    font-size: 1.3rem;
+  }
+
+  .history-empty {
+    padding: 2rem 1rem;
+  }
+
+.chart-section {
+  margin: 2rem 0;
+}
+
+.period-selector {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.period-selector button {
+  padding: 0.6rem 1.4rem;
+  border: 2px solid #ddd;
+  background: #ffffff;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #1b3c4b;
+  transition: all 0.2s;
+}
+
+.period-selector button.active,
+.period-selector button:hover {
+  background: linear-gradient(135deg, #27c1a5, #2360c4);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.chart-container {
+  max-width: 900px;
+  height: 400px; /* augmente ici pour un graph plus grand */
+  margin: 0 auto;
+}
+
+/* le reste de ton CSS existant (history-container, history-item, etc.) reste inchangé */
+
+}
+
+
+
+/* Insuffisance pondérale */
+.history-item-category.insuffisanceponderale {
+  background: rgba(76, 175, 245, 0.15);
+  color: #2196f3;
+}
+
+/* Corpulence normale */
+.history-item-category.corpulencenormale {
+  background: rgba(76, 175, 80, 0.15);
+  color: #4caf50;
+}
+
+/* Surpoids */
+.history-item-category.surpoids {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+}
+
+/* Obésité */
+.history-item-category.obésité,
+.history-item-category.obesite {
+  background: rgba(244, 67, 54, 0.15);
+  color: #f44336;
+}
+
+/* Obésité morbide */
+.history-item-category.obésitémorbide,
+.history-item-category.obesitemorbide {
+  background: rgba(183, 28, 28, 0.2);
+  color: #b71c1c;
+}

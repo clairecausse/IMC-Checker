@@ -1,0 +1,85 @@
+/*
+  ====================================================
+  IMC Checker - Système de design cohérent
+  ====================================================
+*/
+
+:root {
+  /* Couleurs primaires */
+  --primary-teal: #43c6ac;
+  --primary-dark: #191654;
+  --primary-blue: #195c9f;
+
+  /* Couleurs secondaires */
+  --secondary-light: #eef6fa;
+  --secondary-lighter: #d4edf4;
+
+  /* Textes */
+  --text-dark: #263238;
+  --text-light: #f5f5f5;
+
+  /* Bordures */
+  --border-color: #c7e3f7;
+  --border-light: rgba(67, 198, 172, 0.2);
+
+  /* Ombres */
+  --shadow-sm: 0 2px 8px rgba(67, 198, 172, 0.08);
+  --shadow-md: 0 6px 24px rgba(100, 179, 244, 0.13);
+  --shadow-lg: 0 12px 40px rgba(67, 198, 172, 0.15);
+
+  /* Couleurs IMC */
+  --color-underweight: #4cafb5;
+  --color-normal: #4caf50;
+  --color-overweight: #ffc107;
+  --color-obese: #f44336;
+
+  /* Espacements */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 2.5rem;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-md: 0.3s ease;
+  --transition-slow: 0.6s ease-out;
+
+  /* Dégradés */
+  --gradient-primary: linear-gradient(135deg, var(--primary-teal) 0%, var(--primary-dark) 100%);
+  --gradient-reverse: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-teal) 100%);
+  --gradient-hover: linear-gradient(90deg, var(--primary-teal) 40%, var(--primary-dark) 90%);
+}
+
+/* ====================================================
+   DARK MODE (override uniquement les variables)
+==================================================== */
+
+body.dark {
+  --secondary-light: #0f172a;
+  --secondary-lighter: #020617;
+
+  --text-dark: #e5e7eb;
+  --text-light: #ffffff;
+
+  --border-color: #334155;
+  --border-light: rgba(148, 163, 184, 0.25);
+
+  --primary-blue: #7dd3fc;
+  --primary-teal: #5eead4;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.7);
+
+  --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #22d3ee 100%);
+  --gradient-hover: linear-gradient(90deg, #22d3ee 40%, #0ea5e9 90%);
+}

@@ -1,0 +1,121 @@
+/* Palette de couleurs */
+:root {
+  --primary-teal: #43c6ac;
+  --primary-dark: #191654;
+  --primary-blue: #195c9f;
+  --text-dark: #263238;
+  --shadow-md: 0 6px 24px rgba(100, 179, 244, 0.13);
+}
+
+/* Page Home */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Carte About */
+.about-section {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.99), rgba(238, 246, 250, 0.5));
+  border-radius: 16px;
+  padding: 2.5rem;
+  border-left: 5px solid var(--primary-teal);
+  box-shadow: var(--shadow-md);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.about-section h2 {
+  color: var(--primary-blue);
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.about-section p {
+  color: var(--text-dark);
+  opacity: 0.9;
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}
+
+/* Grille de contenu */
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.content-card {
+  background: rgba(67, 198, 172, 0.05);
+  border: 2px solid rgba(67, 198, 172, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.content-card:hover {
+  border-color: var(--primary-teal);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.content-card h3 {
+  color: var(--primary-blue);
+  margin-bottom: 1rem;
+}
+
+.content-card p {
+  color: var(--text-dark);
+  opacity: 0.85;
+}
+
+/* Listes stylisées */
+ul, ol {
+  margin: 1.5rem 0;
+  padding-left: 1.5rem;
+  color: var(--text-dark);
+}
+
+li {
+  margin: 0.8rem 0;
+  opacity: 0.9;
+  line-height: 1.7;
+}
+
+li strong {
+  color: var(--primary-teal);
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .about-section {
+    padding: 1.5rem;
+  }
+  
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-section {
+    padding: 1.25rem;
+  }
+  
+  .about-section h2 {
+    font-size: 1.5rem;
+  }
+}

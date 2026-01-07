@@ -1,0 +1,154 @@
+/* =============================== */
+/*        BACKDROP (fond noir)     */
+/* =============================== */
+
+.auth-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.25s ease-out;
+  z-index: 1000;
+}
+
+/* Animation fond noir */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* =============================== */
+/*            CARD MODAL           */
+/* =============================== */
+
+.auth-modal {
+  background: white;
+  padding: 2rem;
+  width: 380px;
+  border-radius: 12px;
+  position: relative;
+  animation: popup 0.25s ease-out;
+  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Animation pop-up (scale + fade) */
+@keyframes popup {
+  from {
+    opacity: 0;
+    transform: scale(0.85) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* =============================== */
+/*             CLOSE BTN           */
+/* =============================== */
+
+.auth-close-btn {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #444;
+}
+
+.auth-close-btn:hover {
+  color: #000;
+}
+
+/* =============================== */
+/*             FORM                */
+/* =============================== */
+
+.auth-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.auth-modal label {
+  font-weight: 600;
+  margin-bottom: -4px;
+}
+
+.auth-modal input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  outline: none;
+}
+
+.auth-modal input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.6);
+}
+
+/* =============================== */
+/*         BUTTON / SWITCH         */
+/* =============================== */
+
+.auth-btn {
+  margin-top: 10px;
+  background: #007bff;
+  border: none;
+  padding: 12px;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.auth-btn:hover {
+  background: #005dc7;
+}
+
+.auth-switch {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.auth-switch span {
+  color: #007bff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-switch span:hover {
+  text-decoration: underline;
+}
+
+/* =============================== */
+/*         CONFIRM EMAIL           */
+/* =============================== */
+
+.auth-confirm {
+  text-align: center;
+}
+
+.auth-confirm p {
+  margin: 15px 0;
+  line-height: 1.4;
+}
+
+/* =============================== */
+/*             ERRORS              */
+/* =============================== */
+
+.auth-error {
+  color: red;
+  font-size: 14px;
+  margin-top: -5px;
+  margin-bottom: -5px;
+}

@@ -1,22 +1,33 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import Home from "../pages/Home/Home";
-import History from "../pages/Client/History";
-import About from "../pages/About/About";
+import Profil from "../pages/Client/Profil";
+import Login from "../pages/Client/Login";
+
+import AuthModal from "../components/AuthModal";
+
 import { HistoryProvider } from "../context/HistoryProvider";
+import { AuthProvider } from "../context/AuthProvider";
+import { LanguageProvider } from "../context/language";
 
 export default function AppRouter() {
   return (
-    <HistoryProvider>
-      <Router>
-        <NavBar />
-
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/historique" element={<History />} />
-          <Route path="/a-propos" element={<About />} />
-        </Routes>
-      </Router>
-    </HistoryProvider>
+    <AuthProvider>
+      <HistoryProvider>
+        <LanguageProvider>
+          <Router>
+            <NavBar />
+            <AuthModal />
+            <main>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/profil" element={<Profil />} />
+              </Routes>
+            </main>
+          </Router>
+        </LanguageProvider>
+      </HistoryProvider>
+    </AuthProvider>
   );
 }
