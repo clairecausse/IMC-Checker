@@ -1,27 +1,31 @@
 import { useState } from "react";
 import { useAuthContext } from "../context/useAuthContext";
+import {
+  getLocalHistory,
+  clearLocalHistory,
+} from "../utils/localHistory";
+
 import "./AuthModal.css";
 
 export default function AuthModal() {
-  const {
-    isAuthModalOpen,
-    closeAuthModal,
-    login,
-  } = useAuthContext();
+  const { isAuthModalOpen, closeAuthModal, login } = useAuthContext();
 
-  const [mode, setMode] = useState<"login" | "register" | "confirm-email">(
-    "login"
-  );
+  const [mode, setMode] = useState<
+    "login" | "register" | "confirm-email"
+  >("login");
 
-  // Champs du formulaire
+  // Champs
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
-  // États UI
+  // UI
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [registerSuccess, setRegisterSuccess] = useState(false);
+
+  // Checkbox INSCRIPTION UNIQUEMENT
+  const [transferLocalData, setTransferLocalData] = useState(false);
 
   if (!isAuthModalOpen) return null;
 
@@ -32,6 +36,7 @@ export default function AuthModal() {
     setError("");
     setLoading(false);
     setRegisterSuccess(false);
+    setTransferLocalData(false);
   }
 
   /* ======================
@@ -59,8 +64,15 @@ export default function AuthModal() {
         return;
       }
 
+      // 🔑 Login OK
       login(data.token);
+
+      // 🚫 AUCUN TRANSFERT AU LOGIN
+      // 🧹 Nettoyage des données locales uniquement
+      clearLocalHistory();
+
       resetFields();
+      closeAuthModal();
     } catch {
       setError("Erreur serveur, réessayez plus tard");
       setLoading(false);
@@ -72,8 +84,6 @@ export default function AuthModal() {
      ====================== */
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
-
-    // 🔒 Empêche tout double appel
     if (loading || registerSuccess) return;
 
     setError("");
@@ -86,10 +96,18 @@ export default function AuthModal() {
     setLoading(true);
 
     try {
+      const body = {
+        email,
+        password,
+        keepLocalData: transferLocalData,
+        // 👉 TRANSFERT UNIQUEMENT À L’INSCRIPTION
+        localHistory: transferLocalData ? getLocalHistory() : [],
+      };
+
       const res = await fetch("http://localhost:3001/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(body),
       });
 
       const data = await res.json();
@@ -100,7 +118,10 @@ export default function AuthModal() {
         return;
       }
 
-      // ✅ Succès UNIQUE : on ne rappellera jamais /register
+      // 🧹 IMPORTANT :
+      // - transféré OU refusé → on supprime TOUJOURS
+      clearLocalHistory();
+
       setRegisterSuccess(true);
       setMode("confirm-email");
     } catch {
@@ -123,7 +144,7 @@ export default function AuthModal() {
             <h2>Connexion</h2>
 
             <form onSubmit={handleLogin}>
-              <label>Email :</label>
+              <label>Email</label>
               <input
                 type="email"
                 value={email}
@@ -131,7 +152,7 @@ export default function AuthModal() {
                 onChange={(e) => setEmail(e.target.value)}
               />
 
-              <label>Mot de passe :</label>
+              <label>Mot de passe</label>
               <input
                 type="password"
                 value={password}
@@ -147,11 +168,11 @@ export default function AuthModal() {
             </form>
 
             <p className="auth-switch">
-              Pas encore inscrit ?{" "}
+              Pas de compte ?{" "}
               <span
                 onClick={() => {
-                  setMode("register");
                   resetFields();
+                  setMode("register");
                 }}
               >
                 Créer un compte
@@ -166,7 +187,7 @@ export default function AuthModal() {
             <h2>Créer un compte</h2>
 
             <form onSubmit={handleRegister}>
-              <label>Email :</label>
+              <label>Email</label>
               <input
                 type="email"
                 value={email}
@@ -174,7 +195,7 @@ export default function AuthModal() {
                 onChange={(e) => setEmail(e.target.value)}
               />
 
-              <label>Mot de passe :</label>
+              <label>Mot de passe</label>
               <input
                 type="password"
                 value={password}
@@ -182,7 +203,7 @@ export default function AuthModal() {
                 onChange={(e) => setPassword(e.target.value)}
               />
 
-              <label>Confirmer le mot de passe :</label>
+              <label>Confirmer le mot de passe</label>
               <input
                 type="password"
                 value={confirm}
@@ -191,6 +212,18 @@ export default function AuthModal() {
               />
 
               {error && <p className="auth-error">{error}</p>}
+
+              {/* ☑️ CHECKBOX INSCRIPTION UNIQUEMENT */}
+              <label className="auth-checkbox">
+                <input
+                  type="checkbox"
+                  checked={transferLocalData}
+                  onChange={(e) =>
+                    setTransferLocalData(e.target.checked)
+                  }
+                />
+                Transférer mes données sauvegardées
+              </label>
 
               <button
                 type="submit"
@@ -205,8 +238,8 @@ export default function AuthModal() {
               Déjà un compte ?{" "}
               <span
                 onClick={() => {
-                  setMode("login");
                   resetFields();
+                  setMode("login");
                 }}
               >
                 Se connecter
@@ -228,8 +261,8 @@ export default function AuthModal() {
             <button
               className="auth-btn"
               onClick={() => {
-                setMode("login");
                 resetFields();
+                setMode("login");
               }}
             >
               Retour à la connexion

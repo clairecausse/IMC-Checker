@@ -1,0 +1,73 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 420px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  border: none;
+  background: transparent;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.modal-close:hover {
+  color: black;
+}
+
+.modal-title {
+  margin-bottom: 0.75rem;
+}
+
+.modal-message {
+  color: #555;
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* boutons génériques */
+.btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: #999999;
+}
+
+.btn:hover {
+  background: #292929;
+}
+
+.btn.danger {
+  background: #d32f2f;
+  color: white;
+}
+
+.btn.danger:hover {
+  background: #b71c1c;
+}

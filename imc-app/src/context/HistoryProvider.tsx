@@ -1,7 +1,11 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { getCookie, setCookie, deleteCookie } from "../utils/cookie";
-import { HistoryContext, type Preferences, type Result } from "./HistoryContext";
+import {
+  HistoryContext,
+  type Preferences,
+  type Result,
+} from "./HistoryContext";
 import { useAuth } from "./AuthContext";
 
 const COOKIE_KEY = "bmi-app-data";
@@ -19,17 +23,25 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
     const cookieHistory = cookieData?.history || [];
     const cookiePrefs = cookieData?.preferences || { theme: "light" };
 
-    if (justRegistered && cookieHistory.length > 0) {
-      setHistory(cookieHistory);
-      setPreferencesState(cookiePrefs);
-      deleteCookie(COOKIE_KEY);
+    // ✅ CAS UNIQUE : juste après inscription
+    if (justRegistered) {
+      if (cookieHistory.length > 0) {
+        setHistory(cookieHistory);
+        setPreferencesState(cookiePrefs);
+        deleteCookie(COOKIE_KEY);
+      }
       return;
     }
 
+    // ✅ UTILISATEUR NON CONNECTÉ → cookie = source
     if (!isAuthenticated) {
       setHistory(cookieHistory);
       setPreferencesState(cookiePrefs);
     }
+
+    // 🔒 UTILISATEUR CONNECTÉ (login)
+    // ❌ ON NE TOUCHE PAS AU COOKIE
+    // ❌ ON NE MET PAS À JOUR L’ÉTAT
   }, [isAuthenticated, justRegistered]);
 
   function addResult(result: Result) {

@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import "./NavBar.css";
+import Settings from "./Settings";
+import { useLang } from "../context/language";
 
 export default function NavBar() {
+  const { t } = useLang();
+
   return (
     <nav className="navbar">
       <div className="navbar-left">
@@ -12,10 +16,18 @@ export default function NavBar() {
       </div>
 
       <ul className="navbar-links">
-        <li><Link to="/">Accueil</Link></li>
-        <li><Link to="/a-propos">À propos</Link></li>
-        <li><Link to="/profil">Mon profil</Link></li>
+        <li>
+          <Link to="/">{t("nav.home")}</Link>
+        </li>
+        <li>
+          <Link to="/a-propos">{t("nav.about")}</Link>
+        </li>
+        <li>
+          <Link to="/profil">{t("nav.profile")}</Link>
+        </li>
       </ul>
+
+      <Settings />
     </nav>
   );
 }
