@@ -81,6 +81,10 @@ export default {
       yAxis: "BMI",
       xAxis: "Date",
     },
+    export: {
+    pdf: "Export as PDF",
+    json: "Export as JSON",
+    },
   },
 
   auth: {
@@ -209,6 +213,7 @@ export default {
     description:
       "Morbid obesity corresponds to a BMI above 50 and represents a very high level of body fat accumulation.",
   },
+
 },
 
 

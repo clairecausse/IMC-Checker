@@ -3,6 +3,8 @@ import { useHistoryContext } from "../../context/useHistoryContext";
 import { useLang } from "../../context/language";
 import "./History.css";
 import RGPD from "./RGPD";
+import jsPDF from "jspdf";
+
 
 import {
   Chart as ChartJS,
@@ -140,91 +142,142 @@ export default function History({ hideTitle = false }: HistoryProps) {
     },
   };
 
-  // --------------------------
-  //     RENDER
-  // --------------------------
-  return (
-    <div className="history-container">
-      {!hideTitle && <h1>{t("history.title")}</h1>}
+  function exportJSON() {
+  const blob = new Blob([JSON.stringify(history, null, 2)], {
+    type: "application/json",
+  });
 
-      <div className="chart-section">
-        <div className="period-selector">
-          <button
-            className={period === "30j" ? "active" : ""}
-            onClick={() => setPeriod("30j")}
-          >
-            {t("history.period.last30days")}
-          </button>
-          <button
-            className={period === "3m" ? "active" : ""}
-            onClick={() => setPeriod("3m")}
-          >
-            {t("history.period.last3months")}
-          </button>
-          <button
-            className={period === "1a" ? "active" : ""}
-            onClick={() => setPeriod("1a")}
-          >
-            {t("history.period.last1year")}
-          </button>
-          <button
-            className={period === "tout" ? "active" : ""}
-            onClick={() => setPeriod("tout")}
-          >
-            {t("history.period.all")}
-          </button>
-        </div>
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "bmi-history.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
-        <div className="chart-container">
-          {hasData ? (
-            <Line data={chartData} options={options} />
-          ) : (
-            <p>{t("history.noData")}</p>
-          )}
-        </div>
+function exportPDF() {
+  const pdf = new jsPDF();
+
+  pdf.setFontSize(16);
+  pdf.text(t("history.title"), 14, 20);
+
+  pdf.setFontSize(11);
+  let y = 35;
+
+  history.forEach((item, index) => {
+    if (y > 280) {
+      pdf.addPage();
+      y = 20;
+    }
+
+    pdf.text(
+      `${index + 1}. ${item.date} | BMI: ${item.bmi} | ${item.category}`,
+      14,
+      y
+    );
+    y += 8;
+  });
+
+  pdf.save("bmi-history.pdf");
+}
+
+
+ return (
+  <div className="history-container">
+    {!hideTitle && <h1>{t("history.title")}</h1>}
+
+    {/* GRAPHIQUE */}
+    <div className="chart-section">
+      <div className="period-selector">
+        <button
+          className={period === "30j" ? "active" : ""}
+          onClick={() => setPeriod("30j")}
+        >
+          {t("history.period.last30days")}
+        </button>
+        <button
+          className={period === "3m" ? "active" : ""}
+          onClick={() => setPeriod("3m")}
+        >
+          {t("history.period.last3months")}
+        </button>
+        <button
+          className={period === "1a" ? "active" : ""}
+          onClick={() => setPeriod("1a")}
+        >
+          {t("history.period.last1year")}
+        </button>
+        <button
+          className={period === "tout" ? "active" : ""}
+          onClick={() => setPeriod("tout")}
+        >
+          {t("history.period.all")}
+        </button>
       </div>
 
-      {history.length === 0 ? (
-        <div className="history-empty">
-          <p>{t("history.emptyHint")}</p>
-        </div>
-      ) : (
-        <>
-          <ul className="history-list">
-            {history.map((item, i) => (
-              <li key={i} className="history-item">
-                <div className="history-item-content">
-                  <div className="history-item-main">
-                    <span className="history-item-bmi">{item.bmi}</span>
-                    <span className={getCategoryClass(item.category)}>
-                      {item.category}
-                    </span>
-                  </div>
-                  <div className="history-item-date">
-                     {item.date}
-                  </div>
-                </div>
-
-                <div className="history-item-actions">
-                  <button
-                    className="history-item-delete"
-                    onClick={() => removeResult(i)}
-                    title={t("history.delete")}
-                  >
-                    🗑️ {t("history.delete")}
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-
-          <p className="history-total">
-            {t("history.total")} <strong>{history.length}</strong>
-          </p>
-
-          <RGPD />
-        </>
-      )}
+      <div className="chart-container">
+        {hasData ? (
+          <Line data={chartData} options={options} />
+        ) : (
+          <p>{t("history.noData")}</p>
+        )}
+      </div>
     </div>
-  );
+
+    {/* HISTORIQUE */}
+    {history.length === 0 ? (
+      <div className="history-empty">
+        <p>{t("history.emptyHint")}</p>
+      </div>
+    ) : (
+      <>
+        {/* EXPORT */}
+        <div className="history-export">
+          <button onClick={exportPDF}>
+            {t("history.export.pdf")}
+          </button>
+          <button onClick={exportJSON}>
+            {t("history.export.json")}
+          </button>
+        </div>
+
+        <ul className="history-list">
+          {history.map((item, i) => (
+            <li key={i} className="history-item">
+              <div className="history-item-content">
+                <div className="history-item-main">
+                  <span className="history-item-bmi">{item.bmi}</span>
+                  <span className={getCategoryClass(item.category)}>
+                    {item.category}
+                  </span>
+                </div>
+
+                <div className="history-item-date">
+                  {item.date}
+                </div>
+              </div>
+
+              <div className="history-item-actions">
+                <button
+                  className="history-item-delete"
+                  onClick={() => removeResult(i)}
+                  title={t("history.delete")}
+                >
+                  🗑️ {t("history.delete")}
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <p className="history-total">
+          {t("history.total")} <strong>{history.length}</strong>
+        </p>
+
+        <RGPD />
+      </>
+    )}
+  </div>
+);
+
 }

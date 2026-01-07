@@ -83,6 +83,10 @@ export default {
       yAxis: "IMC",
       xAxis: "Date",
     },
+      export: {
+    pdf: "Export en PDF",
+    json: "Export en JSON",
+    },
   },
 
   auth: {
@@ -212,6 +216,9 @@ bmiCategory: {
     description:
       "L’obésité morbide correspond à un IMC supérieur à 50. Elle représente un niveau très élevé d'accumulation de masse grasse.",
   },
+
+
+
 },
 
 };
