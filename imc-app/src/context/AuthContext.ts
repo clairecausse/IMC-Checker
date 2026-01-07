@@ -3,10 +3,14 @@ import { createContext, useContext } from "react";
 export type AuthContextType = {
   token: string | null;
   isAuthenticated: boolean;
+
   justRegistered: boolean;
+  importCookieHistory: boolean;
+
   login: (token: string) => void;
-  register: (token: string) => void;
+  register: (token: string, importCookieHistory: boolean) => void;
   logout: () => void;
+
   isAuthModalOpen: boolean;
   openAuthModal: () => void;
   closeAuthModal: () => void;

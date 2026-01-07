@@ -11,7 +11,11 @@ import { useAuth } from "./AuthContext";
 const COOKIE_KEY = "bmi-app-data";
 
 export function HistoryProvider({ children }: { children: ReactNode }) {
-  const { isAuthenticated, justRegistered } = useAuth();
+  const {
+    isAuthenticated,
+    justRegistered,
+    importCookieHistory,
+  } = useAuth();
 
   const [history, setHistory] = useState<Result[]>([]);
   const [preferences, setPreferencesState] = useState<Preferences>({
@@ -23,26 +27,26 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
     const cookieHistory = cookieData?.history || [];
     const cookiePrefs = cookieData?.preferences || { theme: "light" };
 
-    // ✅ CAS UNIQUE : juste après inscription
-    if (justRegistered) {
-      if (cookieHistory.length > 0) {
+    // 🔒 RÈGLE ABSOLUE :
+    // utilisateur authentifié = cookie interdit
+    if (isAuthenticated) {
+      // ✅ SEUL CAS AUTORISÉ : migration volontaire à l'inscription
+      if (justRegistered && importCookieHistory && cookieHistory.length > 0) {
         setHistory(cookieHistory);
         setPreferencesState(cookiePrefs);
         deleteCookie(COOKIE_KEY);
+      } else {
+        // ❌ pas d'import → historique vide côté compte
+        setHistory([]);
+        setPreferencesState({ theme: "light" });
       }
       return;
     }
 
-    // ✅ UTILISATEUR NON CONNECTÉ → cookie = source
-    if (!isAuthenticated) {
-      setHistory(cookieHistory);
-      setPreferencesState(cookiePrefs);
-    }
-
-    // 🔒 UTILISATEUR CONNECTÉ (login)
-    // ❌ ON NE TOUCHE PAS AU COOKIE
-    // ❌ ON NE MET PAS À JOUR L’ÉTAT
-  }, [isAuthenticated, justRegistered]);
+    // ✅ MODE INVITÉ UNIQUEMENT
+    setHistory(cookieHistory);
+    setPreferencesState(cookiePrefs);
+  }, [isAuthenticated, justRegistered, importCookieHistory]);
 
   function addResult(result: Result) {
     const resultWithDate: Result = {
@@ -53,6 +57,7 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
     setHistory((prev) => {
       const updated = [...prev, resultWithDate];
 
+      // ✅ écriture cookie uniquement en mode invité
       if (!isAuthenticated) {
         setCookie(COOKIE_KEY, {
           history: updated,

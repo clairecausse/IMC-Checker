@@ -8,11 +8,15 @@ import {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
+
   const [justRegistered, setJustRegistered] = useState(false);
+  const [importCookieHistory, setImportCookieHistory] = useState(false);
+
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const isAuthenticated = !!token;
 
+  // 🔁 Récupération session existante
   useEffect(() => {
     const saved = getAuthCookie();
     if (saved?.token) {
@@ -20,23 +24,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // ✅ LOGIN
   function login(newToken: string) {
     setToken(newToken);
     setJustRegistered(false);
+    setImportCookieHistory(false);
+
     setAuthCookie(newToken);
     closeAuthModal();
   }
 
-  function register(newToken: string) {
+  // ✅ REGISTER (avec checkbox)
+  function register(newToken: string, keepHistory: boolean) {
     setToken(newToken);
     setJustRegistered(true);
+    setImportCookieHistory(keepHistory);
+
     setAuthCookie(newToken);
     closeAuthModal();
   }
 
+  // ✅ LOGOUT
   function logout() {
     setToken(null);
     setJustRegistered(false);
+    setImportCookieHistory(false);
+
     deleteAuthCookie();
   }
 
@@ -54,6 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         token,
         isAuthenticated,
         justRegistered,
+        importCookieHistory,
         login,
         register,
         logout,
