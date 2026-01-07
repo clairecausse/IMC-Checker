@@ -22,32 +22,55 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
     theme: "light",
   });
 
+  /* =================================================
+     1️⃣ EFFET PRINCIPAL
+     - hydrate l’état
+     - NE SUPPRIME RIEN
+     ================================================= */
   useEffect(() => {
     const cookieData = getCookie(COOKIE_KEY);
     const cookieHistory = cookieData?.history || [];
     const cookiePrefs = cookieData?.preferences || { theme: "light" };
 
-    // 🔒 RÈGLE ABSOLUE :
-    // utilisateur authentifié = cookie interdit
     if (isAuthenticated) {
-      // ✅ SEUL CAS AUTORISÉ : migration volontaire à l'inscription
-      if (justRegistered && importCookieHistory && cookieHistory.length > 0) {
-        setHistory(cookieHistory);
-        setPreferencesState(cookiePrefs);
-        deleteCookie(COOKIE_KEY);
-      } else {
-        // ❌ pas d'import → historique vide côté compte
-        setHistory([]);
-        setPreferencesState({ theme: "light" });
-      }
+      setHistory([]);
+      setPreferencesState({ theme: "light" });
       return;
     }
 
-    // ✅ MODE INVITÉ UNIQUEMENT
     setHistory(cookieHistory);
     setPreferencesState(cookiePrefs);
+  }, [isAuthenticated]);
+
+  /* =================================================
+     2️⃣ EFFET DE MIGRATION (POST-AUTH)
+     - agit UNIQUEMENT quand l’utilisateur est connecté
+     - corrige le timing
+     ================================================= */
+  useEffect(() => {
+
+    if (!isAuthenticated || !justRegistered) return;
+
+    const cookieData = getCookie(COOKIE_KEY);
+    const cookieHistory = cookieData?.history || [];
+    const cookiePrefs = cookieData?.preferences || { theme: "light" };
+
+    if (importCookieHistory && cookieHistory.length > 0) {
+
+      setHistory(cookieHistory);
+      setPreferencesState(cookiePrefs);
+      deleteCookie(COOKIE_KEY);
+    } else {
+  
+      setHistory([]);
+      setPreferencesState({ theme: "light" });
+      deleteCookie(COOKIE_KEY);
+    }
   }, [isAuthenticated, justRegistered, importCookieHistory]);
 
+  /* ======================
+     ACTIONS
+     ====================== */
   function addResult(result: Result) {
     const resultWithDate: Result = {
       ...result,
@@ -57,7 +80,6 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
     setHistory((prev) => {
       const updated = [...prev, resultWithDate];
 
-      // ✅ écriture cookie uniquement en mode invité
       if (!isAuthenticated) {
         setCookie(COOKIE_KEY, {
           history: updated,

@@ -9,26 +9,6 @@ const router = express.Router();
 const JWT_SECRET = "secret";
 
 /* ======================
-   MIDDLEWARE AUTH
-====================== */
-function authMiddleware(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return res.status(401).json({ error: "Non authentifié" });
-  }
-
-  const token = authHeader.split(" ")[1];
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded; // { id }
-    next();
-  } catch {
-    return res.status(401).json({ error: "Token invalide" });
-  }
-}
-
-/* ======================
    VERIFY EMAIL
 ====================== */
 router.get("/verify/:token", async (req, res) => {
@@ -52,10 +32,10 @@ router.get("/verify/:token", async (req, res) => {
 });
 
 /* ======================
-   LOGIN
+   LOGIN + MIGRATION
 ====================== */
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, localHistory } = req.body;
 
   const user = await db.get(
     "SELECT * FROM users WHERE email = ?",
@@ -74,15 +54,40 @@ router.post("/login", async (req, res) => {
     return res.status(400).json({ error: "Compte non vérifié" });
   }
 
+  // 🔑 Génération du token
   const token = jwt.sign({ id: user.id }, JWT_SECRET, {
     expiresIn: "7d",
   });
+
+  /* ======================
+     MIGRATION HISTORIQUE
+  ====================== */
+  if (Array.isArray(localHistory) && localHistory.length > 0) {
+    for (const item of localHistory) {
+      // sécurité minimale
+      if (
+        typeof item.bmi !== "number" ||
+        typeof item.category !== "string" ||
+        typeof item.date !== "string"
+      ) {
+        continue;
+      }
+
+      await db.run(
+        "INSERT INTO history (user_id, bmi, category, date) VALUES (?, ?, ?, ?)",
+        user.id,
+        item.bmi,
+        item.category,
+        item.date
+      );
+    }
+  }
 
   res.json({ token });
 });
 
 /* ======================
-   REGISTER
+   REGISTER (AUCUNE MIGRATION ICI)
 ====================== */
 router.post("/register", async (req, res) => {
   const { email, password } = req.body;
@@ -109,20 +114,6 @@ router.post("/register", async (req, res) => {
     });
   } catch {
     res.status(400).json({ error: "Email déjà utilisé" });
-  }
-});
-
-/* ======================
-   DELETE ACCOUNT
-====================== */
-router.delete("/me", authMiddleware, async (req, res) => {
-  const userId = req.user.id;
-
-  try {
-    await db.run("DELETE FROM users WHERE id = ?", userId);
-    res.json({ message: "Compte supprimé" });
-  } catch {
-    res.status(500).json({ error: "Erreur lors de la suppression du compte" });
   }
 });
 

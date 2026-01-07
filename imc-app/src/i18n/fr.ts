@@ -136,6 +136,12 @@ export default {
     errors: {
       delete: "Erreur lors de la suppression du compte",
     },
+    deleteModal: {
+      title: "Confirmer la suppression du compte",
+      message:
+        "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
+     confirm: "Supprimer mon compte",
+    },
   },
 
   modal: {

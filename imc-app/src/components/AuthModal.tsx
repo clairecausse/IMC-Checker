@@ -25,7 +25,7 @@ export default function AuthModal() {
   const [loading, setLoading] = useState(false);
   const [registerSuccess, setRegisterSuccess] = useState(false);
 
-  // Checkbox INSCRIPTION UNIQUEMENT
+  // Checkbox (UX inscription uniquement)
   const [transferLocalData, setTransferLocalData] = useState(false);
 
   if (!isAuthModalOpen) return null;
@@ -41,7 +41,7 @@ export default function AuthModal() {
   }
 
   /* ======================
-        LOGIN
+        LOGIN (MIGRATION ICI)
      ====================== */
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -51,10 +51,16 @@ export default function AuthModal() {
     setLoading(true);
 
     try {
+      const localHistory = getLocalHistory();
+
       const res = await fetch("http://localhost:3001/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email,
+          password,
+          localHistory, // 🔥 ENVOI DES DONNÉES ICI
+        }),
       });
 
       const data = await res.json();
@@ -66,7 +72,11 @@ export default function AuthModal() {
       }
 
       login(data.token);
-      clearLocalHistory();
+
+      // 🧹 Nettoyage après migration réussie
+      if (localHistory.length > 0) {
+        clearLocalHistory();
+      }
 
       resetFields();
       closeAuthModal();
@@ -77,7 +87,7 @@ export default function AuthModal() {
   }
 
   /* ======================
-        REGISTER
+        REGISTER (PAS DE MIGRATION)
      ====================== */
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
@@ -93,17 +103,10 @@ export default function AuthModal() {
     setLoading(true);
 
     try {
-      const body = {
-        email,
-        password,
-        keepLocalData: transferLocalData,
-        localHistory: transferLocalData ? getLocalHistory() : [],
-      };
-
       const res = await fetch("http://localhost:3001/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
@@ -114,7 +117,6 @@ export default function AuthModal() {
         return;
       }
 
-      clearLocalHistory();
       setRegisterSuccess(true);
       setMode("confirm-email");
     } catch {

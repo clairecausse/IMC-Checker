@@ -131,6 +131,13 @@ export default {
     loginAction: "Log in / Create an account",
     historyTitle: "My BMI history",
     deleteAccount: "Delete account",
+    deleteModal: {
+        title: "Confirm account deletion",
+        message:
+        "Are you sure you want to delete your account? This action is irreversible.",
+        confirm: "Delete my account",
+    },
+
     errors: {
       delete: "Error while deleting account",
     },

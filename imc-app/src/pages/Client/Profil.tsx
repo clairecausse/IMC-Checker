@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/useAuthContext";
 import { useLang } from "../../context/language";
@@ -11,8 +11,23 @@ export default function Profil() {
   const { token, logout, openAuthModal } = useAuthContext();
   const navigate = useNavigate();
 
+  const [newsletter, setNewsletter] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [error, setError] = useState("");
+
+  // 🔄 Charger l'état newsletter depuis la BDD
+  useEffect(() => {
+    if (!token) return;
+
+    fetch("http://localhost:3001/users/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(res => res.json())
+      .then(data => setNewsletter(!!data.newsletter))
+      .catch(() => {});
+  }, [token]);
 
   async function deleteAccount() {
     setError("");
@@ -60,6 +75,34 @@ export default function Profil() {
         <h2>{t("profile.historyTitle")}</h2>
         <History hideTitle />
       </section>
+
+      {/* ✅ Toggle newsletter UNIQUEMENT si connecté */}
+      {token && (
+        <>
+          <hr className="profil-separator" />
+
+          <label className="newsletter-toggle">
+            <input
+              type="checkbox"
+              checked={newsletter}
+              onChange={async (e) => {
+                const value = e.target.checked;
+                setNewsletter(value);
+
+                await fetch("http://localhost:3001/users/newsletter", {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({ newsletter: value }),
+                });
+              }}
+            />
+            S’inscrire à la newsletter
+          </label>
+        </>
+      )}
 
       {token && (
         <>

@@ -9,14 +9,18 @@ import {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
 
+  // Flags migration
   const [justRegistered, setJustRegistered] = useState(false);
   const [importCookieHistory, setImportCookieHistory] = useState(false);
 
+  // UI
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const isAuthenticated = !!token;
 
-  // 🔁 Récupération session existante
+  /* ======================
+        SESSION PERSISTANTE
+     ====================== */
   useEffect(() => {
     const saved = getAuthCookie();
     if (saved?.token) {
@@ -24,9 +28,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // ✅ LOGIN
+  /* ======================
+            LOGIN
+     ====================== */
   function login(newToken: string) {
     setToken(newToken);
+
+    // reset flags → login classique
     setJustRegistered(false);
     setImportCookieHistory(false);
 
@@ -34,9 +42,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     closeAuthModal();
   }
 
-  // ✅ REGISTER (avec checkbox)
+  /* ======================
+          REGISTER
+     ====================== */
   function register(newToken: string, keepHistory: boolean) {
     setToken(newToken);
+
+    // flags utilisés PLUS TARD par HistoryProvider
     setJustRegistered(true);
     setImportCookieHistory(keepHistory);
 
@@ -44,7 +56,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     closeAuthModal();
   }
 
-  // ✅ LOGOUT
+  /* ======================
+            LOGOUT
+     ====================== */
   function logout() {
     setToken(null);
     setJustRegistered(false);
@@ -53,6 +67,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     deleteAuthCookie();
   }
 
+  /* ======================
+            MODAL
+     ====================== */
   function openAuthModal() {
     setIsAuthModalOpen(true);
   }
@@ -66,11 +83,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         token,
         isAuthenticated,
+
         justRegistered,
         importCookieHistory,
+
         login,
         register,
         logout,
+
         isAuthModalOpen,
         openAuthModal,
         closeAuthModal,

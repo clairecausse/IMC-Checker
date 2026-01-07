@@ -4,6 +4,7 @@ export type AuthContextType = {
   token: string | null;
   isAuthenticated: boolean;
 
+  // migration flags
   justRegistered: boolean;
   importCookieHistory: boolean;
 
@@ -11,6 +12,7 @@ export type AuthContextType = {
   register: (token: string, importCookieHistory: boolean) => void;
   logout: () => void;
 
+  // modal auth
   isAuthModalOpen: boolean;
   openAuthModal: () => void;
   closeAuthModal: () => void;
