@@ -20,9 +20,6 @@ export default function NavBar() {
           <Link to="/">{t("nav.home")}</Link>
         </li>
         <li>
-          <Link to="/a-propos">{t("nav.about")}</Link>
-        </li>
-        <li>
           <Link to="/profil">{t("nav.profile")}</Link>
         </li>
       </ul>

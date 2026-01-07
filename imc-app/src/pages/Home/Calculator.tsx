@@ -6,16 +6,19 @@ import { useHistoryContext } from "../../context/useHistoryContext";
 import { useCooldown } from "../../context/hooks/useCooldown";
 import { calculateBmi, getBmiCategory } from "../../utils/bmi";
 import { getLastResult, saveLastResult } from "../../utils/storage";
+import { useLang } from "../../context/language";
 import "./Calculator.css";
 
 export default function Calculator() {
+  const { t } = useLang();
+
   const [bmi, setBmi] = useState<number | null>(null);
   const [category, setCategory] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const { addResult, removeResult, history } = useHistoryContext();
   const { available, remaining, saveNow } = useCooldown();
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -26,17 +29,18 @@ export default function Calculator() {
       }
     } catch (e) {
       console.error("Erreur chargement dernier résultat:", e);
-      setError("Impossible de charger le dernier résultat.");
+      setError(t("calculator.errors.loadLast"));
     }
-  }, []);
-
+  }, [t]);
 
   function handleCalculate(weight: number, height: number) {
     if (!available) return;
 
     try {
       const value = calculateBmi(weight, height);
-      if (!isFinite(value) || Number.isNaN(value)) throw new Error("IMC invalide");
+      if (!isFinite(value) || Number.isNaN(value)) {
+        throw new Error("Invalid BMI");
+      }
 
       const cat = getBmiCategory(value);
 
@@ -51,12 +55,11 @@ export default function Calculator() {
       });
 
       saveLastResult({ bmi: value, category: cat });
-
       saveNow();
       window.location.reload();
     } catch (e) {
       console.error("Erreur lors du calcul IMC:", e);
-      setError("Erreur lors du calcul. Vérifiez les valeurs saisies et réessayez.");
+      setError(t("calculator.errors.calculate"));
     }
   }
 
@@ -66,22 +69,24 @@ export default function Calculator() {
 
   function handleDeleteLast() {
     if (!history || history.length === 0) return;
+
     const idx = history.length - 1;
     removeResult(idx);
+
     localStorage.removeItem("last-bmi-calc");
     localStorage.removeItem("last-bmi-result");
+
     setError(null);
     window.location.reload();
   }
 
-
   return (
     <div className={`calculator ${!available ? "disabled" : ""}`}>
-      <h2>Calculateur d’IMC</h2>
+      <h2>{t("calculator.title")}</h2>
 
       {!available && (
         <p className="cooldown-text">
-          Vous avez déjà calculé votre IMC pour ajourd'hui, revenez demain ! {remaining} minute(s)
+          {t("calculator.cooldown")} {remaining} {t("common.minutes")}
         </p>
       )}
 
@@ -98,9 +103,14 @@ export default function Calculator() {
       {!available && (
         <div className="calculator-actions">
           <BmiResult bmi={bmi} category={category} />
+
           <div className="buttons">
-            <button onClick={handleGoHistory}>Voir l'historique</button>
-            <button onClick={handleDeleteLast}>Modifier</button>
+            <button onClick={handleGoHistory}>
+              {t("calculator.buttons.history")}
+            </button>
+            <button onClick={handleDeleteLast}>
+              {t("calculator.buttons.edit")}
+            </button>
           </div>
         </div>
       )}

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/useAuthContext";
+import { useLang } from "../../context/language";
 import History from "./History";
 import ConfirmDelete from "../../components/ConfirmDelete";
 import "./Profil.css";
 
 export default function Profil() {
+  const { t } = useLang();
   const { token, logout, openAuthModal } = useAuthContext();
   const navigate = useNavigate();
 
@@ -24,31 +26,29 @@ export default function Profil() {
       });
 
       if (!res.ok) {
-        setError("Erreur lors de la suppression du compte");
+        setError(t("profile.errors.delete"));
         return;
       }
 
       logout();
       navigate("/");
     } catch {
-      setError("Impossible de contacter le serveur");
+      setError(t("errors.server"));
     }
   }
 
   return (
     <div className="profil-container">
-      <h1>Mon Profil</h1>
+      <h1>{t("profile.title")}</h1>
 
       <section className="profil-auth-box">
         {token ? (
-          <p className="profil-hello">Bonjour !</p>
+          <p className="profil-hello">{t("profile.hello")}</p>
         ) : (
           <>
-            <p>
-              Connectez-vous pour sauvegarder vos données et les retrouver plus tard.
-            </p>
+            <p>{t("profile.notConnected")}</p>
             <button className="login-btn" onClick={openAuthModal}>
-              Se connecter / Créer un compte
+              {t("profile.loginAction")}
             </button>
           </>
         )}
@@ -57,7 +57,7 @@ export default function Profil() {
       <hr className="profil-separator" />
 
       <section className="profil-history">
-        <h2>Mon historique IMC</h2>
+        <h2>{t("profile.historyTitle")}</h2>
         <History hideTitle />
       </section>
 
@@ -67,14 +67,14 @@ export default function Profil() {
 
           <div className="profil-actions">
             <button className="logout-btn" onClick={logout}>
-              Se déconnecter
+              {t("auth.logout")}
             </button>
 
             <button
               className="logout-btn danger"
               onClick={() => setShowDeleteModal(true)}
             >
-              Supprimer mon compte
+              {t("profile.deleteAccount")}
             </button>
           </div>
         </>
@@ -82,10 +82,10 @@ export default function Profil() {
 
       {showDeleteModal && (
         <ConfirmDelete
-          title="Supprimer mon compte"
-          message="Cette action est définitive. Toutes vos données seront supprimées."
-          confirmLabel="Oui, supprimer"
-          cancelLabel="Annuler"
+          title={t("profile.deleteModal.title")}
+          message={t("profile.deleteModal.message")}
+          confirmLabel={t("profile.deleteModal.confirm")}
+          cancelLabel={t("modal.close")}
           onConfirm={deleteAccount}
           onCancel={() => setShowDeleteModal(false)}
         />

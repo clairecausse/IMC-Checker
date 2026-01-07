@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useHistoryContext } from "../../context/useHistoryContext";
+import { useLang } from "../../context/language";
 import "./History.css";
 import RGPD from "./RGPD";
 
@@ -30,14 +31,14 @@ ChartJS.register(
 type Period = "30j" | "3m" | "1a" | "tout";
 
 type HistoryProps = {
-  hideTitle?: boolean; // 👉 ajout pour utilisation dans Profil
+  hideTitle?: boolean;
 };
 
 export default function History({ hideTitle = false }: HistoryProps) {
+  const { t } = useLang();
   const { history, removeResult } = useHistoryContext();
   const [period, setPeriod] = useState<Period>("30j");
 
-  // Classe CSS selon la catégorie
   const getCategoryClass = (category: string) =>
     `history-item-category ${category.toLowerCase().replace(/\s+/g, "")}`;
 
@@ -62,7 +63,6 @@ export default function History({ hideTitle = false }: HistoryProps) {
         cutoffDate = new Date(0);
     }
 
-    // Filtrage et tri par date
     const filteredHistory = history
       .filter((item) => {
         const d = new Date(item.date);
@@ -72,7 +72,6 @@ export default function History({ hideTitle = false }: HistoryProps) {
         (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
       );
 
-    // Labels du graphique
     const labels = filteredHistory.map((item) =>
       new Date(item.date).toLocaleDateString("fr-FR", {
         day: "2-digit",
@@ -87,7 +86,7 @@ export default function History({ hideTitle = false }: HistoryProps) {
       labels,
       datasets: [
         {
-          label: "Évolution IMC",
+          label: t("history.chart.label"),
           data: dataValues,
           borderColor: "rgb(75, 192, 192)",
           backgroundColor: "rgba(75, 192, 192, 0.2)",
@@ -109,9 +108,8 @@ export default function History({ hideTitle = false }: HistoryProps) {
     };
 
     return { chartData, hasData: filteredHistory.length > 0 };
-  }, [history, period]);
+  }, [history, period, t]);
 
-  // Options du graphique
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -120,19 +118,25 @@ export default function History({ hideTitle = false }: HistoryProps) {
       title: {
         display: true,
         text:
-          "Évolution IMC - " +
+          t("history.chart.title") +
+          " - " +
           (period === "30j"
-            ? "30 jours"
+            ? t("history.period.last30days")
             : period === "3m"
-            ? "3 mois"
+            ? t("history.period.last3months")
             : period === "1a"
-            ? "1 an"
-            : "Tout"),
+            ? t("history.period.last1year")
+            : t("history.period.all")),
       },
     },
     scales: {
-      y: { beginAtZero: false, title: { display: true, text: "IMC" } },
-      x: { title: { display: true, text: "Date" } },
+      y: {
+        beginAtZero: false,
+        title: { display: true, text: t("history.chart.yAxis") },
+      },
+      x: {
+        title: { display: true, text: t("history.chart.xAxis") },
+      },
     },
   };
 
@@ -141,34 +145,48 @@ export default function History({ hideTitle = false }: HistoryProps) {
   // --------------------------
   return (
     <div className="history-container">
-      {!hideTitle && <h1>📊 Historique et Évolution IMC</h1>}
+      {!hideTitle && <h1>{t("history.title")}</h1>}
 
-      {/* SECTION GRAPHIQUE */}
       <div className="chart-section">
         <div className="period-selector">
-          <button className={period === "30j" ? "active" : ""} onClick={() => setPeriod("30j")}>
-            30 jours
+          <button
+            className={period === "30j" ? "active" : ""}
+            onClick={() => setPeriod("30j")}
+          >
+            {t("history.period.last30days")}
           </button>
-          <button className={period === "3m" ? "active" : ""} onClick={() => setPeriod("3m")}>
-            3 mois
+          <button
+            className={period === "3m" ? "active" : ""}
+            onClick={() => setPeriod("3m")}
+          >
+            {t("history.period.last3months")}
           </button>
-          <button className={period === "1a" ? "active" : ""} onClick={() => setPeriod("1a")}>
-            1 an
+          <button
+            className={period === "1a" ? "active" : ""}
+            onClick={() => setPeriod("1a")}
+          >
+            {t("history.period.last1year")}
           </button>
-          <button className={period === "tout" ? "active" : ""} onClick={() => setPeriod("tout")}>
-            Tout
+          <button
+            className={period === "tout" ? "active" : ""}
+            onClick={() => setPeriod("tout")}
+          >
+            {t("history.period.all")}
           </button>
         </div>
 
         <div className="chart-container">
-          {hasData ? <Line data={chartData} options={options} /> : <p>Aucune donnée pour cette période.</p>}
+          {hasData ? (
+            <Line data={chartData} options={options} />
+          ) : (
+            <p>{t("history.noData")}</p>
+          )}
         </div>
       </div>
 
-      {/* LISTE DES ENTRÉES */}
       {history.length === 0 ? (
         <div className="history-empty">
-          <p>Commencez à calculer votre IMC pour voir votre historique !</p>
+          <p>{t("history.emptyHint")}</p>
         </div>
       ) : (
         <>
@@ -182,16 +200,18 @@ export default function History({ hideTitle = false }: HistoryProps) {
                       {item.category}
                     </span>
                   </div>
-                  <div className="history-item-date">📅 {item.date}</div>
+                  <div className="history-item-date">
+                     {item.date}
+                  </div>
                 </div>
 
                 <div className="history-item-actions">
                   <button
                     className="history-item-delete"
                     onClick={() => removeResult(i)}
-                    title="Supprimer cet enregistrement"
+                    title={t("history.delete")}
                   >
-                    🗑️ Supprimer
+                    🗑️ {t("history.delete")}
                   </button>
                 </div>
               </li>
@@ -199,7 +219,7 @@ export default function History({ hideTitle = false }: HistoryProps) {
           </ul>
 
           <p className="history-total">
-            Total des calculs : <strong>{history.length}</strong>
+            {t("history.total")} <strong>{history.length}</strong>
           </p>
 
           <RGPD />

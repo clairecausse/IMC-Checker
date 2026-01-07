@@ -231,16 +231,16 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .history-item-actions {
     width: 100%;
   }
-  
+
   .history-item-delete {
     width: 100%;
     text-align: center;
   }
-  
+
   .history-stats {
     grid-template-columns: 1fr;
   }
@@ -251,20 +251,20 @@
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
   }
-  
+
   .history-item {
     padding: 1.25rem;
     gap: 1rem;
   }
-  
+
   .history-item-bmi {
     font-size: 1.3rem;
   }
-  
+
   .history-empty {
     padding: 2rem 1rem;
   }
-  
+
 .chart-section {
   margin: 2rem 0;
 }
@@ -305,3 +305,36 @@
 
 }
 
+
+
+/* Insuffisance pondérale */
+.history-item-category.insuffisanceponderale {
+  background: rgba(76, 175, 245, 0.15);
+  color: #2196f3;
+}
+
+/* Corpulence normale */
+.history-item-category.corpulencenormale {
+  background: rgba(76, 175, 80, 0.15);
+  color: #4caf50;
+}
+
+/* Surpoids */
+.history-item-category.surpoids {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+}
+
+/* Obésité */
+.history-item-category.obésité,
+.history-item-category.obesite {
+  background: rgba(244, 67, 54, 0.15);
+  color: #f44336;
+}
+
+/* Obésité morbide */
+.history-item-category.obésitémorbide,
+.history-item-category.obesitemorbide {
+  background: rgba(183, 28, 28, 0.2);
+  color: #b71c1c;
+}

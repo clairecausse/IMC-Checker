@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLang } from "../context/language";
 import "./Form.css";
 
 type Props = {
@@ -7,7 +8,9 @@ type Props = {
 };
 
 export default function BmiForm({ onCalculate }: Props) {
-  const [unit, setUnit] = useState<"metric" | "imperial">("metric"); // 'metric' = kg/cm, 'imperial' = lbs/inch
+  const { t } = useLang();
+
+  const [unit, setUnit] = useState<"metric" | "imperial">("metric");
   const [weight, setWeight] = useState(60);
   const [height, setHeight] = useState(165);
 
@@ -16,13 +19,13 @@ export default function BmiForm({ onCalculate }: Props) {
   const inchToCm = (inch: number) => inch * 2.54;
 
   const handleWeightChange = (value: number) => {
-    if (value >= 0 && value <= (unit === "metric" ? 600 : 1320)) { // 600 kg ou ~1320 lbs
+    if (value >= 0 && value <= (unit === "metric" ? 600 : 1320)) {
       setWeight(value);
     }
   };
 
   const handleHeightChange = (value: number) => {
-    if (value >= 0 && value <= (unit === "metric" ? 250 : 98)) { // 250 cm ou ~98 inch
+    if (value >= 0 && value <= (unit === "metric" ? 250 : 98)) {
       setHeight(value);
     }
   };
@@ -30,7 +33,6 @@ export default function BmiForm({ onCalculate }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Convertir toujours en kg/cm avant calcul
     const weightKg = unit === "metric" ? weight : lbsToKg(weight);
     const heightCm = unit === "metric" ? height : inchToCm(height);
 
@@ -40,18 +42,20 @@ export default function BmiForm({ onCalculate }: Props) {
   return (
     <form onSubmit={handleSubmit}>
       <label>
-        Unité
+        {t("calculator.unit")}
         <select
           value={unit}
-          onChange={(e) => setUnit(e.target.value as "metric" | "imperial")}
+          onChange={(e) =>
+            setUnit(e.target.value as "metric" | "imperial")
+          }
         >
-          <option value="metric">kg / cm</option>
-          <option value="imperial">lbs / inch</option>
+          <option value="metric">{t("calculator.units.metric")}</option>
+          <option value="imperial">{t("calculator.units.imperial")}</option>
         </select>
       </label>
 
       <label>
-        Poids ({unit === "metric" ? "kg" : "lbs"})
+        {t("calculator.weight")} ({unit === "metric" ? t("calculator.unitKg") : t("calculator.unitLbs")})
         <input
           type="number"
           value={weight}
@@ -64,7 +68,7 @@ export default function BmiForm({ onCalculate }: Props) {
       </label>
 
       <label>
-        Taille ({unit === "metric" ? "cm" : "inch"})
+        {t("calculator.height")} ({unit === "metric" ? t("calculator.unitCm") : t("calculator.unitInch")})
         <input
           type="number"
           value={height}
@@ -76,7 +80,9 @@ export default function BmiForm({ onCalculate }: Props) {
         />
       </label>
 
-      <button type="submit">Calculer</button>
+      <button type="submit">
+        {t("calculator.calculate")}
+      </button>
     </form>
   );
 }

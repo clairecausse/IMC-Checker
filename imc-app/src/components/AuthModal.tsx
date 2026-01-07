@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useAuthContext } from "../context/useAuthContext";
+import { useLang } from "../context/language";
 import {
   getLocalHistory,
   clearLocalHistory,
 } from "../utils/localHistory";
-
 import "./AuthModal.css";
 
 export default function AuthModal() {
+  const { t } = useLang();
   const { isAuthModalOpen, closeAuthModal, login } = useAuthContext();
 
   const [mode, setMode] = useState<
@@ -59,22 +60,18 @@ export default function AuthModal() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Email ou mot de passe incorrect");
+        setError(data.error || t("auth.errors.invalidLogin"));
         setLoading(false);
         return;
       }
 
-      // 🔑 Login OK
       login(data.token);
-
-      // 🚫 AUCUN TRANSFERT AU LOGIN
-      // 🧹 Nettoyage des données locales uniquement
       clearLocalHistory();
 
       resetFields();
       closeAuthModal();
     } catch {
-      setError("Erreur serveur, réessayez plus tard");
+      setError(t("errors.server"));
       setLoading(false);
     }
   }
@@ -89,7 +86,7 @@ export default function AuthModal() {
     setError("");
 
     if (password !== confirm) {
-      setError("Les mots de passe ne correspondent pas");
+      setError(t("auth.errors.passwordMismatch"));
       return;
     }
 
@@ -100,7 +97,6 @@ export default function AuthModal() {
         email,
         password,
         keepLocalData: transferLocalData,
-        // 👉 TRANSFERT UNIQUEMENT À L’INSCRIPTION
         localHistory: transferLocalData ? getLocalHistory() : [],
       };
 
@@ -113,19 +109,16 @@ export default function AuthModal() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Impossible de créer le compte");
+        setError(data.error || t("auth.errors.register"));
         setLoading(false);
         return;
       }
 
-      // 🧹 IMPORTANT :
-      // - transféré OU refusé → on supprime TOUJOURS
       clearLocalHistory();
-
       setRegisterSuccess(true);
       setMode("confirm-email");
     } catch {
-      setError("Erreur serveur, réessayez plus tard");
+      setError(t("errors.server"));
     } finally {
       setLoading(false);
     }
@@ -141,10 +134,10 @@ export default function AuthModal() {
         {/* ================= LOGIN ================= */}
         {mode === "login" && (
           <>
-            <h2>Connexion</h2>
+            <h2>{t("auth.loginTitle")}</h2>
 
             <form onSubmit={handleLogin}>
-              <label>Email</label>
+              <label>{t("auth.email")}</label>
               <input
                 type="email"
                 value={email}
@@ -152,7 +145,7 @@ export default function AuthModal() {
                 onChange={(e) => setEmail(e.target.value)}
               />
 
-              <label>Mot de passe</label>
+              <label>{t("auth.password")}</label>
               <input
                 type="password"
                 value={password}
@@ -163,19 +156,21 @@ export default function AuthModal() {
               {error && <p className="auth-error">{error}</p>}
 
               <button type="submit" className="auth-btn" disabled={loading}>
-                {loading ? "Connexion..." : "Se connecter"}
+                {loading
+                  ? t("auth.loading.login")
+                  : t("auth.loginTitle")}
               </button>
             </form>
 
             <p className="auth-switch">
-              Pas de compte ?{" "}
+              {t("auth.noAccount")}{" "}
               <span
                 onClick={() => {
                   resetFields();
                   setMode("register");
                 }}
               >
-                Créer un compte
+                {t("auth.createAccount")}
               </span>
             </p>
           </>
@@ -184,10 +179,10 @@ export default function AuthModal() {
         {/* ================= REGISTER ================= */}
         {mode === "register" && (
           <>
-            <h2>Créer un compte</h2>
+            <h2>{t("auth.signupTitle")}</h2>
 
             <form onSubmit={handleRegister}>
-              <label>Email</label>
+              <label>{t("auth.email")}</label>
               <input
                 type="email"
                 value={email}
@@ -195,7 +190,7 @@ export default function AuthModal() {
                 onChange={(e) => setEmail(e.target.value)}
               />
 
-              <label>Mot de passe</label>
+              <label>{t("auth.password")}</label>
               <input
                 type="password"
                 value={password}
@@ -203,7 +198,7 @@ export default function AuthModal() {
                 onChange={(e) => setPassword(e.target.value)}
               />
 
-              <label>Confirmer le mot de passe</label>
+              <label>{t("auth.confirmPassword")}</label>
               <input
                 type="password"
                 value={confirm}
@@ -213,7 +208,6 @@ export default function AuthModal() {
 
               {error && <p className="auth-error">{error}</p>}
 
-              {/* ☑️ CHECKBOX INSCRIPTION UNIQUEMENT */}
               <label className="auth-checkbox">
                 <input
                   type="checkbox"
@@ -222,7 +216,7 @@ export default function AuthModal() {
                     setTransferLocalData(e.target.checked)
                   }
                 />
-                Transférer mes données sauvegardées
+                {t("auth.transferData")}
               </label>
 
               <button
@@ -230,19 +224,21 @@ export default function AuthModal() {
                 className="auth-btn"
                 disabled={loading || registerSuccess}
               >
-                {loading ? "Création..." : "Créer mon compte"}
+                {loading
+                  ? t("auth.loading.register")
+                  : t("auth.createAccount")}
               </button>
             </form>
 
             <p className="auth-switch">
-              Déjà un compte ?{" "}
+              {t("auth.alreadyAccount")}{" "}
               <span
                 onClick={() => {
                   resetFields();
                   setMode("login");
                 }}
               >
-                Se connecter
+                {t("auth.loginTitle")}
               </span>
             </p>
           </>
@@ -251,12 +247,8 @@ export default function AuthModal() {
         {/* ================= CONFIRM EMAIL ================= */}
         {mode === "confirm-email" && (
           <div className="auth-confirm">
-            <h2>📧 Vérifiez vos emails</h2>
-            <p>
-              Un lien de validation a été envoyé à votre adresse email.
-              <br />
-              Vous pourrez ensuite vous connecter.
-            </p>
+            <h2>{t("auth.confirmEmail.title")}</h2>
+            <p>{t("auth.confirmEmail.text")}</p>
 
             <button
               className="auth-btn"
@@ -265,7 +257,7 @@ export default function AuthModal() {
                 setMode("login");
               }}
             >
-              Retour à la connexion
+              {t("auth.confirmEmail.back")}
             </button>
           </div>
         )}
